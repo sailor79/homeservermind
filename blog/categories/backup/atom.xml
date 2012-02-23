@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: Backup | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/backup/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen (Exkurs)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/"/>
+    <updated>2012-01-31T23:03:32+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen</id>
+    <content type="html"><![CDATA[<h2>Exkurs Finderlohn-Datei, um den Stick vielleicht wiederzubekommen</h2>
+
+<p>Dieser Teil in der Reihe USB-Stick im Alltag sicher benutzen ist weniger technisch als der letzte <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Artikel</a>.
+Hier möchte ich Ihnen kurz mein Konzept darstellen, wie ich die Wahrscheinlichkeit deutlich erhöhen möchte, einen verlorenen USB-Stick vom Finder wieder zu bekommen.<!-- more --></p>
+
+<p>Wie in den vorherigen Artikeln beschrieben, haben wir auf dem USB-Stick nur einen Ordner namens <code>Secure</code> mit dem Container und TrueCrypt portable. Da die oberste Ebene die ist, welche man als Finder sofort sieht, erstelle ich daneben eine einfache Textdatei mit dem Namen <code>Finderlohn-reward.txt</code>. Dies lenkt die Aufmerksamtkeit direkt auf sich.</p>
+
+<p><img src="../images/2012/01/Finderlohn.jpg" alt="Finderlohn Ordner USB-Stick" /></p>
+
+<p>In dieser Datei schreibe ich einem Texteditor folgendes rein:</p>
+
+<pre><code>Sehr geehrte(r) Finder(in),
+vielen Dank, dass Sie meinen verlorenen USB-Stick gefunden haben. 
+Die Daten auf dem Speicher sind verschlüsselt und somit unbrauchbar.
+
+Gerne bin ich bei einer Rücksendung bereit, Ihnen zum Dank einen 
+Finderlohn in Höhe des Wertes des USB-Sticks (15 Euro + Porto),
+beispielsweise per Paypal oder bar zu schicken.
+So haben Sie einen neuen USB-Stick mit Garantie, 
+und ich meine Daten wieder.
+
+Kontaktieren Sie mich einfach unverbindlich unter
+- E-Mail: mailto:email@email.de oder telefonisch unter
+- Mobil: +49 (01234) 567 890 123
+
+Vielen Dank für Ihre Hilfe.
+
+Mit freundlichen Grüßen
+Mein Name
+Adresse
+</code></pre>
+
+<p>Was halten Sie von der Idee?
+Es garantiert zwar nicht die Rückgabe des Sticks, aber es erleichtert die Ehrlichkeit des Finders meiner Meinung nach ungemein.
+Einziger Kritikpunkt wäre die Bekanntgabe persönlicher (Adress-)daten, jedoch geht die Wahrscheinlichkeit gegen Null, dass der/die zufällige FinderIn die Daten mißbraucht.</p>
+
+<p>Um aber nicht vom Finder abhängig zu sein, wollen wir uns im nächsten Artikel endlich mit dem Thema regelmäßiges Backup eines TrueCrypt-Containers beschäftigen. So können wir ggf. auf eine Rückgabe verzichten, direkt weiterarbeiten mit unseren Daten und uns selber einen neuen USB-Stick gönnen.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 4 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/"/>
+    <updated>2012-01-30T02:07:51+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden</id>
+    <content type="html"><![CDATA[<h2>TrueCrypt-Container per Batch-Script halbautomatisch (un-)mounten bzw. als Laufwerk einbinden</h2>
+
+<p>Nachdem wir einen TrueCrypt-Container <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">hier</a> erstellt haben und nun auch wissen, wie wir ihn in der Praxis als <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Windows-Laufwerk einbinden</a>, gehen wir nun einen Schritt weiter.
+Da es ein bißchen lästig ist, den Container jedesmal manuell als Laufwerk in Windows einzubinden (mounten), habe ich ein kleines Script erstellt, welches dies (halb-)automatisch für uns erledigt.<!-- more --> Warum halbautomatisch? Das Kennwort sollte und muss immer noch manuell eingegeben werden, da es sonst unverschlüsselt für jeden lesbar wäre und wir uns die ganze Arbeit hätten sparen können.</p>
+
+<p>Im unserem Ordner <code>Secure</code> auf dem USB-Stick erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>Start.bat</code> ab.
+Wichtig ist, dass sich die Datei <code>Start.bat</code> im gleichen Ordner wie die Datei <code>Truecrypt.exe</code> sowie dem TrueCrypt-Container befindet!</p>
+
+<blockquote><p>Allerdings muss jeder zwei kleine Anpassungen im Code machen:</p></blockquote>
+
+<ol>
+<li><p>In Zeile 11 kann das <code>J</code> in <code>set Wunsch_LW=J</code> durch einen anderen Wunschlaufwerksbuchstaben ersetzt werden. Dieser wird, sofern er nicht schon in Benutzung ist, als Laufwerk benutzt. Andernfalls wird der erste freie Buchstabe im aktuell laufenden System ausgelesen und stattdessen benutzt.</p></li>
+<li><p>In Zeile 13 MUSS <code>namedatendatei</code> in <code>set Container=namedatendatei</code> durch den eigenen gewählten Namen der TrueCryptcontainer-Datei ersetzt werden. In unserem <a href="http://home-server-mind.com/?p=784">Beispiel</a> haben wir den Container bzw. die Datei einfach <code>daten</code> genannt.
+Man kann die Datei übrigens auch ein wenig tarnen, indem man sie z.B. Tabelle.xls oder werbung.mpeg benennt.</p></li>
+</ol>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Start.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'><span class="c">::&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;em&gt;&lt;strong&gt;&lt;strong&gt;</span>
+</span><span class='line'><span class="c">:: mw2012, TrueCryptcontainer mit dieser BATCH-Datei automatisch mit Wunschlaufwerksbuchstabe mounten&lt;/strong&gt;&lt;/strong&gt;</span>
+</span><span class='line'><span class="c">:: Wenn Buchstabe schon belegt, wird erster freier Buchstabe im System genommen und als Hinweis ausgeben&lt;/em&gt;</span>
+</span><span class='line'><span class="c">:: Achtung: Dieser Batchdatei muss im selben Ordner wie TrueCrpt.exe sowie Containerdatei liegen!&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;</span>
+</span><span class='line'><span class="c">:: Dass Kennwort bzw. die Passphrase wird nach dem Aufruf abgefragt. Bitte NIE hier hinterlegen!!!!!!!!!&lt;em&gt;</span>
+</span><span class='line'><span class="c">::&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;************&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::&lt;strong&gt;&lt;strong&gt;&lt;em&gt;Ab hier Änderung ERFORDERLICH!&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;em&gt;</span>
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;J&#39; durch Wunschlaufwerksbuchstaben ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Wunsch_LW</span><span class="o">=</span>J
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;daten3&#39; durch Containernamen ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Container</span><span class="o">=</span>namedatendatei
+</span><span class='line'><span class="c">::&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;Ab hier KEINE Änderungen machen&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;*********&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: wenn Laufwerk nicht vorhanden, dann mounten</span>
+</span><span class='line'><span class="c">:: An dieser Stelle könnten man noch einen Anti-Keylogger einbauen, z.B. MOK</span>
+</span><span class='line'><span class="k">cd</span> <span class="nv">%Wunsch_LW%</span>: &amp;amp;&amp;amp; <span class="k">goto</span> <span class="nl">LW_Vorhanden</span>
+</span><span class='line'><span class="c">:: Fehlermeldung,dass LW nicht vorhanden (gewollt), lässt sich mir 2&gt;NUL und &gt;NUL nicht umleiten</span>
+</span><span class='line'><span class="k">echo</span> ...und daher den gewollten Laufwerksbuchstaben benutzen.
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%Wunsch_LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'>exit&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: Wenn Laufwerk vorhanden, dann ersten freien Buchstaben suchen &gt;</span>
+</span><span class='line'><span class="c">:: Quelle: Codeschnipsel aus http://www.heise.de/ct/hotline/Freien-Laufwerksbuchstaben-finden-322906.html</span>
+</span><span class='line'><span class="nl">:LW_Vorhanden</span>
+</span><span class='line'><span class="k">if</span> not <span class="s2">&quot;%OS%&quot;</span><span class="o">==</span><span class="s2">&quot;Windows_NT&quot;</span> exit <span class="n">/b</span>
+</span><span class='line'><span class="k">setlocal</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">ll</span><span class="o">=</span>D E F G H I J K L M N O P Q R S T U V W X Y Z
+</span><span class='line'><span class="k">for</span> <span class="nv">%%l</span> in (<span class="nv">%ll%</span>) <span class="k">do</span> (
+</span><span class='line'>  <span class="k">set</span> <span class="nv">LW</span><span class="o">=</span><span class="nv">%%l</span>
+</span><span class='line'>  mountvol <span class="nv">%%l:</span> <span class="n">/L</span> <span class="p">&gt;</span><span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   subst <span class="p">|</span> <span class="n">findstr</span> <span class="n">/B</span> <span class="s2">&quot;%%l:&quot;</span> <span class="p">&gt;</span> <span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   net use <span class="nv">%%l:</span> <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;amp;<span class="m">1</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">gotone</span>
+</span><span class='line'>   )
+</span><span class='line'>  )
+</span><span class='line'>)
+</span><span class='line'><span class="k">echo</span> Zurzeit ist kein Laufwerksbuchstabe frei<span class="p">,</span> Container konnte nicht NICHT eingebunden werden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit <span class="n">/b</span>
+</span><span class='line'><span class="nl">:gotone</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: Laufwerk unter gefundenem freien Buchstaben mounten und Hinweismeldung ausgeben</span>
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'><span class="k">echo</span> Der gewünschte Laufwerksbuchstabe ist schon vergeben. Der Container ist nun erfolgreich als Laufwerk <span class="nv">%LW%</span>: eingebunden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<blockquote><p>Das war es schon. Statt den umständlichen Weg über TrueCrypt startet man mit einem Doppelklick nur noch die Datei <code>Start.bat</code>, und gibt sein Kennwort ein. Der Rest geht automatisch.</p></blockquote>
+
+<p>Hinweis: Im obigen Script ist übrigens ein Platzhalter für einen Anti-<a href="http://de.wikipedia.org/wiki/Keylogger">Keylogger</a> wie <a href="http://www.myplanetsoft.com/free/mouse-only-keyboard.php">MOK</a> für ganz vorsichtige bzw. konsequente Zeitgenossen eingebaut. Hier würde man die Zeile 17 durch <code>Start %cd%/mok.exe</code> ersetzen und müsste in Zeile 23 und zwischen Zeile 47 und 48 noch <code>pskill %cd%/mok.exe</code> einfügen. Der Prozess-Stopper psKill ist allerdings nicht standardmäßig in Windows integriert und kann <a href="http://technet.microsoft.com/en-us/sysinternals/bb896683">hier</a> geladen werden.</p>
+
+<h4>TrueCrypt-Container trennen</h4>
+
+<p>Um das TrueCrypt-Laufwerk wieder zu schließen (unmounten), kann man entweder in TrueCrypt auf <em>Alle Trennen</em> klicken, oder eine kleine Batch-Datei namens <code>Stop.bat</code> mit nachfolgendem Inhalt wie oben auch im gleichen Ordner erstellen:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Stop.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span>&gt;<span class="p">&lt;</span><span class="n">code</span>&gt;@<span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'><span class="k">echo</span> Entferne alle TrueCrypt-Laufwerke...
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/d</span> <span class="n">/q</span>
+</span><span class='line'>exit
+</span><span class='line'>&lt;<span class="n">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Weiterlesen...</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 3 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/"/>
+    <updated>2012-01-30T01:55:53+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt</id>
+    <content type="html"><![CDATA[<h2>Bedienungsanleitung TrueCrypt</h2>
+
+<p>Im <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">vorherigen</a> Artikel haben wir den USB-Stick vorbereitet und einen verschlüsselten Container in Form einer Datei erstellt. Dieser Artikel zeigt in Kurzform, wie man den USB-Stick nun im Alltag manuell benutzt. <!-- more --></p>
+
+<ol>
+<li><p>Die Datei <code>TrueCrypt.exe</code> im Ordner Secure auf USB-Stick starten und auf <em>Datei...</em> klicken.
+<img src="../images/2012/01/Dateiauswahl.jpg" alt="Dateiauswahl" /></p></li>
+<li><p>Nun die eben erstellte Datei <code>Daten</code> in Ordner Secure auf USB-Stick wählen und auf <em>Öffnen</em> klicken.
+<img src="../images/2012/01/Datei_auswaehlen2.jpg" alt="Datei auswählen" /></p></li>
+<li><p>Anschließend einen freien Laufwerksbuchstaben wählen (hier <code>N:</code>) und auf <em>Einbinden</em> klicken.
+<img src="../images/2012/01/Datei_einbinden.jpg" alt="Datei einbinden" /></p></li>
+<li><p>Das eben erstellte Kennwort bzw. die Passphrase eingeben und auf <em>OK</em> klicken.
+<img src="../images//2012/01/Datei_Passphrase.jpg" alt="Container Passphrase" /></p></li>
+</ol>
+
+
+<blockquote><p>Das war es. Der Container ist nun als Laufwerk N im Windows-Explorer zu finden. Hier kann man nun nach Belieben Dateien kopieren, verändern und löschen.</p></blockquote>
+
+<p><img src="../images/2012/01/LaufwerkN.jpg" alt="Neuer Laufwerksbuchstabe" /></p>
+
+<h4>Laufwerk wieder Trennen</h4>
+
+<p>Hat man alles erledigt, schließt man alle Dateien und klickt im TrueCrypt-Fenster zunächst auf <em>Trennen</em> und dann auf <em>Beenden</em>.<br/>
+Hinweis: Der Trennvorgang kann mehrere Minuten dauern.<br/>
+<img src="../images/2012/01/LaufwerkN_trennen.jpg" alt="Laufwerk N: wieder trennen" /></p>
+
+<p>Das war es auch schon. Ist doch ganz einfach, oder?</p>
+
+<blockquote><p>Weil das auf Dauer aber doch immer ein bißchen Mühsam ist, schauen wir uns im nächsten Artikel an, wie man das Einbinden des TrueCrypt-Containers als Windows-Laufwerk deutlich beschleunigen kann. Hierzu erstellen wir ein Batch-Script,...
+<a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Weiterlesen...</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 2 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/"/>
+    <updated>2012-01-30T01:52:25+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen</id>
+    <content type="html"><![CDATA[<h2>Anleitung USB-Stick teilweise verschlüsseln</h2>
+
+<p>In diesem Teil möchte ich aufzeigen, wie einfach es ist, die Daten mit dem kostenlosen Tool <a href="http://www.truecrypt.org/docs/?s=truecrypt-portable"> TrueCrypt</a> zu verschlüsseln.</p>
+
+<blockquote><p>Allerdings habe ich die Anforderung, dass ich den Stick auf jedem beliebigen Windows-PC, also auch bei Freunden oder in der Firma, wenn erlaubt, einsetzen möchte, ohne eine Software installieren zu müssen.
+Dies ist realisierbar, indem wir den USB-Stick nicht komplett verschlüsseln, sondern nur einen Teilbereich.<!-- more --></p></blockquote>
+
+<h4>Vorbereitungen:</h4>
+
+<p>Konkret bedeutet dies, das wir einen sogenannten Container erstellen und auf dem für alle sichtbaren Bereich eine direkt ausführbare Version von  TrueCrypt hinterlegen, welche keine Installation erfordert. An dieser Stelle möchte ich darauf hinweisen, dass trotzdem Administrator-Rechte auf dem jeweiligen PC notwendig sind, um TrueCrypt erfolgreich und sicher ausführen zu können.</p>
+
+<p>Hierzu machen wir uns einfach die aktuelle portable Version (7.1 stable) von TrueCrypt zu nutze, welche man <a href="http://www.truecrypt.org/downloads">hier</a> laden kann. Um die Echtheit der Herkunft des Downloads zu prüfen, sei an dieser Stelle an folgenden <a href="http://www.truecrypt.org/docs/?s=digital-signatures">Link</a>  verwiesen.</p>
+
+<p>Der nun geladene Installer lässt sich lokal installieren oder als portable Version extrahieren:</p>
+
+<p>Zunächst starten wir die Datei <code>TrueCrypt Setup 7.1.exe</code> und bestätigen die Lizenzbedingungen. Im nächsten Schritt wählen wir <code>Extract</code> und klicken auf 'Next'. Abschließend wählen wir den Ordner, in welchem die TrueCrypt-Dateien zunächst kopiert werden sollen.</p>
+
+<p><img src="../images/2012/01/tc1.png" alt="Lizenzbedingungen TrueCrypt" /><img src="../images/2012/01/tc2_extract.png" alt="TrueCrypt Option Extract" /><img src="../images/2012/01/tc2_folder1.png" alt="TrueCrypt Extract-Ordner wählen" /></p>
+
+<p><span class='pullquote-right' data-pullquote='Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.'>Nun widmen wir uns dem USB-Stick. Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.
+Wir erstellen auf dem USB-Stick nun einen neuen Ordner mit dem Namen <code>Secure</code>. In diesen Ordner kopieren wir die vorher nach <code>C:\Temp\TC_Files</code> bzw. in den von Ihnen angegebenen Ordner extrahieren Daten hinein und starten die Datei <code>TrueCrypt.exe</code>.</p>
+
+<p>Wer möchte kann sich <a href="http://www.truecrypt.org/download/thirdparty/localizations/langpack-de-1.0.0-for-truecrypt-7.1.zip">hier</a> die aktuelle deutsche Sprachdatei bzw. <a href="http://www.truecrypt.org/localizations">hier</a> seine bevorzugte Sprachdatei laden und ebenfalls in den Ordner <code>Secure</code> auf den USB-Stick kopieren. Die Standardeinstellung ist ansonsten Englisch.</span></p>
+
+<h4>TrueCrypt-Container erstellen:</h4>
+
+<ol>
+<li><p><em>Volumen erstellen</em> klicken<br/>
+<img src="../images/2012/01/1_start2.jpg" alt="TC Start" /></p></li>
+<li><ul>
+<li> <em>Eine verschlüsselte Containerdatei erstellen</em> wählen</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort11.jpg" alt="TC Speicherort 1 von 2" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Als Pfad auf den USB-Stick in den Ordner <code>Secure</code> gehen</li>
+<li> Dateinamen für Container-Datei eingeben, z.B. <code>Daten</code></li>
+<li> <em>Speichern</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort2.jpg" alt="Pfad im Ordner Secure und Dateinamen wählen" /></li>
+</ul>
+</li>
+<li><p><em>Weiter</em> klicken</p>
+
+<blockquote><p>Hinweis: Die Standardeinstellungen sind ausreichend. Mehr Informationen findet man <a href="http://www.truecrypt.org/docs/encryption-algorithms">hier</a> und <a href="http://www.truecrypt.org/docs/hash-algorithms">hier</a>.<br/>
+<img src="../images/2012/01/tc3_verschluesselung.jpg" alt="Verschlüsselung wählen" /></p></blockquote></li>
+<li><ul>
+<li> Die Größe des Containers als ganze Zahl eingeben. Der maximale Speicherplatz steht in         Fettschrift darunter. Ich würde mindestens 100 MB frei lassen.</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselunggroesse.jpg" alt="Volumen-Größe" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Nun muss eine Passphrase eingeben werden. Ein gutes Kennwort erstellt man am besten, indem man einen für sich einfach zu merkenden Satz wählt mit Groß- und Kleinschreibung, ein paar Zahlen und Sonderzeichen. Ich habe hier folgendes gewählt:
+
+<pre><code> MiteinemSatzkannmansichesgutmerken2012.
+</code></pre></li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselungpassword.jpg" alt="Volumen-Kennwort" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Anschließend wählt man das Datei-System der Container-Datei. Hier sollte <code>FAT</code> nur gewählt werden, wenn man weiß, dass man den Stick auf einem alten Rechner mit <code>Fat32</code> Dateisystem benutzt, ansonsten ist <code>NTFS</code> die richtige Wahl.</li>
+<li> Nun sollte man die Maus mindestens 30 Sekunden in dem aktiven Fenster hin und her bewegen. Dies trägt zu einer verbesserten Verschlüsselung vorbei.</li>
+<li> Danach auf <em>Formatieren</em> klicken. Die Dauer dieses Vorgangs ist abhängig von der gewählten Größe und kann zwischen wenigen Minuten und mehreren Stunden dauern. Hier ist also Geduld gefragt!<br/>
+<img src="../images/2012/01/tc3_verschluesselungsformat.jpg" alt="Verschlüsselungsformat" /></li>
+</ul>
+</li>
+<li><p>Wenn die Formatierung abgeschlossen ist, muss man die Erfolgsmeldung per Klick auf <em>OK</em> quittieren.<br/>
+<img src="../images/2012/01/tc3_verschluesselungzerfolgm.jpg" alt="Erfolgsmeldung" /></p></li>
+<li><p>Abschließend per Klick auf <em>Beenden</em> die Prozedur schließen.<br/>
+<img src="../images/2012/01/tc3_verschluesselungbeenden.jpg" alt="Beenden" /></p></li>
+</ol>
+
+
+<blockquote><p>Das wäre also geschafft. Jetzt schauen wir uns an, wie man den Container in der Praxis benutzt. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Weiterlesen...</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/"/>
+    <updated>2012-01-29T16:20:08+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln</id>
+    <content type="html"><![CDATA[<h2>Einleitung</h2>
+
+<h3>Ein USB-Stick ist ein praktischer kleiner Datenspeicher für unterwegs. Nur was passiert, wenn man ihn verliert?</h3>
+
+<p>Ich sehe hier gleich drei Fragestellungen:</p>
+
+<blockquote><ol>
+<li>Was macht der Finder mit meinen persönlichen/ geschäftlichen Daten?</li>
+<li>Wie erhöhe ich die Wahrscheinlichkeit, dass ich den USB-Stick von dem/der Finder(in)     zurückzubekommen?</li>
+<li>Habe ich ein aktuelles Backup meiner USB-Stick Daten?<!-- more --></li>
+</ol>
+</blockquote>
+
+<p>In der Regel haben sich die meisten Nutzer vorher keine Gedanken gemacht oder gar Vorkehrungen getroffen, und geraten bei einem Verlust zurecht in Panik.</p>
+
+<p>In einer Reihe von nachfolgenden Artikeln möchte ich Sie systematisch an das Thema heranführen und Ihnen aufzeigen, wie einfach es ist, o.g. Probleme mit einfachen Mitteln zu vermeiden. Wenn Sie das komplette Konzept nacharbeiten bzw. umsetzen wollen, lesen sie einach immer bis zum Ende des Artikels und klicken den Link Weiterlesen.
+Ansonsten können Sie auch direkt quer in das jeweilige für Sie relevante Thema einsteigen, indem sie den folgenden Links folgen:</p>
+
+<ul>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">USB-Stick vorbereiten und mit TryCrypt teilweise verschlüsseln</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">TrueCrypt im Alltag benutzen für Anfänger</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Expertenmodus: TrueCrypt per Batch-Datei (halb-)automatisch mounten (Laufwerk einbinden)</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Kurzer Exkurs zum Thema: Den Finder animieren, den Stick zurückzugeben</a></li>
+<li>Manuelles Backup eines TrueCrypt-Containers erstellen</li>
+<li>Regelmäßiges automatisiertes inkrementielles Backup eines TrueCrypt-Containers erstellen</li>
+</ul>
+
+
+<p>Dieses Tutorial richtet sich in erster Linie an Windows-Benutzer, also Windows XP, Vista, Windows 7, Windows 7 Ultimate und 64bit. Konzeptionell ist es natürlich auf GNU/Linux und Mac OS X übertragbar. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">Weiterlesen...</a></p>
+
+<p><a class="fancybox" rel="Mindmap" href="../images/2012/01/Verlust-USB-Stick--1024x136.png" title="Mindmap"><img src="../images/2012/01/Verlust-USB-Stick-.png" alt="Mindmap"></a></p>
+]]></content>
+  </entry>
+  
+</feed>

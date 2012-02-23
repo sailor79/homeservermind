@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: Octopress | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Individuelle Fehlerseiten in Octopress einbinden]]></title>
+    <link href="http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/"/>
+    <updated>2012-02-22T22:27:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden</id>
+    <content type="html"><![CDATA[<h2>Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten</h2>
+
+<p>Wer seinen Octopress-Blog auch per <a href="http://wiki.ubuntuusers.de/rsync">rsync</a> auf seinem <a href="http://httpd.apache.org/">Apache-Webserver</a> veröffentlicht, hat es sehr einfach, eigene Fehlerseiten mittels <code>.htaccess</code> zu implementieren und die Standardfehlerseiten des Servers umzuleiten.<!-- more --></p>
+
+<p>Meine Anforderungen an Fehlerseiten:</p>
+
+<ul>
+<li>Fehlerseiten sollen im Artikelbereich landen (gleiches Layout)</li>
+<li>Fehlerseiten sollen die Möglichkeit bieten, andere Posts zu wählen (Archiv anzeigen)</li>
+</ul>
+
+
+<h3>Was sind Fehlerseiten?</h3>
+
+<blockquote><p><cite>Eine Fehlerseite ist eine Webseite, die angezeigt wird, wenn man beispielsweise auf einen Toten Link im Internet klickt bzw. eine nicht existente URL aufruft. Die meisten Browser zeigen dabei die vom Webserver gelieferte Standard-Seite [...]</cite> Quelle: <a href="http://de.wikipedia.org/wiki/Fehlerseite">wiki</a></p></blockquote>
+
+<h3>Welche Fehler bzw. http-Statuscodes für Fehler gibt es?</h3>
+
+<p>Hier können Sie sich allgemein über <a href="http://de.selfhtml.org/servercgi/server/httpstatuscodes.htm">http-Statuscodes</a> informieren.<br/>
+Ich möchte in meinem Blog nur Fehlerseiten für die häufigsten Statusfehlercodes einbinden:</p>
+
+<ol>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not Found (wichtig!, z.B. bei Tippfehlern, verwaisten Seiten)</li>
+<li>500: Internal Server Error</li>
+</ol>
+
+
+<h3>Vorbereitung</h3>
+
+<p>Zunächst stellen wir in unserem Octopress-Verzeichnis im Unterverzeichnis <code>source</code> einen neuen Ordner <code>error</code>.
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir octopress/source/error
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Auf Github bin ich über folgendes <a href="https://github.com/robertkowalski/octopress/commit/31a3fb0b393450d17ec6c82ba724dc9d202edc82#diff-0">Fehlerseiten-Markdown</a> gestoßen und habe es jeweils an meine Bedürfnisse angepasst.<br/>
+Damit erstellen wir für jeden Fehler eine Fehlerseite und speichern sie im Ordner <code>octopress/source/error</code> unter den Namen <code>401.html</code>, <code>403.html</code>,<code>404.html</code> und <code>500.html</code> ab:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Fehlerseite Error 404]  (401.html)</span> <a href='/downloads/code/401.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 401 Unauthorized.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Fehlerseite Error 403]  (403.html)</span> <a href='/downloads/code/403.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 403 Forbidden (Verboten).
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Fehlerseite Error 404]  (404.html)</span> <a href='/downloads/code/404.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Fehler 404, Entschuldigung. Die angeforderte Seite wurde nicht gefunden.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Fehlerseite Error 500]  (500.html)</span> <a href='/downloads/code/500.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, Fehler 500 auf sicheren Seiten.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Nun fügen wir im Verzeichnis <code>../octopress/source</code> die Datei <code>.htaccess</code> hinzu. In dieser leiten wir möglicher Fehler auf unsere neuen Seiten um:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] (.htaccess)  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ErrorDocument 401 /error/401.html
+</span><span class='line'>ErrorDocument 403 /error/403.html
+</span><span class='line'>ErrorDocument 404 /error/404.html
+</span><span class='line'>ErrorDocument 500 /error/500.html</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Wichtig ist, dass die Dateiberechtigung für die Datei <code>.htaccess</code> 644 (Schreibrechte für den Benutzer, Leserechte für alle) lautet. Dies kann man entweder im Terminal machen indem man im Verzeichnis <code>octopress/source</code> folgenden Befehl eingibt:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chmod 644 .htaccess</span></code></pre></td></tr></table></div></figure></notextile></div>
+Bequemer ist natürlich ein FTP-Client wie <a href="http://filezilla-project.org/">File-Zilla</a>.</p>
+
+<p>Fertig. <a href="http://home-server-mind.com/tippfehlerseitenichtvorhanden">DEMO anschauen?</a></p>
+
+<p>Bei Fragen, Anregungen, Probleme einfach einen Kommentar schreiben.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Umzug von Wordpress nach Octopress ]]></title>
+    <link href="http://sailor79.github.com/homeservermind/good-by-wordpress/"/>
+    <updated>2012-02-19T19:04:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/good-by-wordpress</id>
+    <content type="html"><![CDATA[<p>Endlich ist es vollzogen, die Migration dieser Website von <a href="http://de.wordpress.org/">Wordpress</a> nach <a href="https://github.com/imathis/octopress">Octopress</a>, einem <a href="http://jekyllrb.com/">Jekyll</a>-Framework.<!-- more -->
+<img src="../images/2012/02/octo.jpg" height="151" width="816" alt="logo" title="Bilderquelle: wordpress.org, octopress.org, jekyllrb.com"></p>
+
+<h4>Warum?</h4>
+
+<ol>
+<li>An Wordpress mit SQL-Datenbank und PHP hat mich schon immer gestört, dass ich für einen kleinen Blog mit Kanonen auf Spatzen schieße. Man kauft sich ja auch keinen Lieferwagen, um ein Kasten Bier transportieren zu können.</li>
+<li>Der Octopress- bzw. Jekyll-Output ist statisch, d.h. die Ladezeiten verringern sich um ein Vielfaches.</li>
+<li>Statische Seiten sind sicher, ich muss mich nicht mehr ständig um Sicherheitspatches kümmern.
+Octopress Untertitel "A Blogging framework for hackers" meint nicht den Blogger, sondern den <em>Hacker</em>, der nun keine Möglichkeit mehr hat, den Server zu kapern. Im Zweifel schicke ich per rsync die Dateien neu, und das Thema hat sich erledigt.</li>
+<li>Deutlich weniger Spam über CSS-Hacks.</li>
+<li>Einfache Veröffentlichung mittels <a href="http://rake.rubyforge.org/">rake</a>-task über <a href="http://wiki.ubuntuusers.de/rsync">rsync</a>.</li>
+<li>Keep it simple! Datensparsamkeit und Datenvermeidung.</li>
+<li>Unkompliziertes Schreiben mittels Markdown und <a href="http://bradchoate.com/mt/docs/mtmanual_textile2.html">Textile</a> als Auszeichnungsprache.</li>
+<li>Versionskontrolle über github.</li>
+<li>Guter Syntax-Highlighter für Technik-Blogs.</li>
+</ol>
+
+
+<h4>Was ist Jekyll?</h4>
+
+<blockquote><p>Jekyll ist <cite>ein Postgenerator und kein Blogging-Framework, der direkte Vergleich mit Wordpress wäre also eher unfair. Jekyll will kein CMS mit komplettem Admin Control Panel und anderweitigen Komfortfunktionen sein, denn es ist ein schlankes Kommandozeilen-Tool, das aus den vorliegenden Artikel- und Layout-Dateien statische HTML-Webseiten generiert. Das mag nun Einsteiger wahrscheinlich abschrecken, für mich ist es aber genau richtig. Da Jekyll nur normale HTML-Dateien erzeugt, läuft es beinahe auf jedem beliebigen Webserver und benötigt auch keine Datenbank [...]</cite> Quelle: <a href="http://ganz-sicher.net/blog/blognews/Umstieg-von-Wordpress-nach-Jekyll/">Ganz-Sicher.Net Blog</a></p></blockquote>
+
+<h4>ToDo</h4>
+
+<h5>Folgende Themen habe ich noch nicht (vollständig) umgesetzt:</h5>
+
+<ul>
+<li><s>Kontaktformular (Da beisst sich die Katze in den Schwanz.)</s></li>
+<li>Ordentliche Suchfunktion, evtl. mittels bestfrom/anchorman oder indextank</li>
+<li>Implementierung 2-Klick-System <a href="http://www.heise.de/extras/socialshareprivacy/">(c't)</a> für Socialbuttons</li>
+<li><s>Fancybox-Implementierung</s></li>
+<li>Latex-Einbindung mittels <a href="http://www.mathjax.org/docs/1.1/tex.html">MathJax</a></li>
+<li>Echte <a href="https://github.com/blackwinter/jekyll-localization">Lokalisation</a></li>
+<li><s>Javascript/CSS mit gzip komprimieren (.htaccess?)</s></li>
+<li><s>TagCloud</s></li>
+<li>Github-Versionskontrolle (leider bisher vernachlässigt...)</li>
+<li><a href="https://github.com/LawrenceWoodman/related_posts-jekyll_plugin"><s>Related Posts</s> </a></li>
+<li>CSS-Problem mit Menüleiste in IE/ Mozilla</li>
+<li>print.css für Artikeldruck erstellen</li>
+</ul>
+
+
+<h4>Nachteile</h4>
+
+<ul>
+<li>Anfänglich ist viel Handarbeit nötig, grundsätzliche Programmier- und Linuxkenntnisse sollten vorhanden sein.</li>
+<li>Kommentare sind dynamisch, daher muss ein externer Dienst (z.B. <a href="http://disqus.com/">disqus</a>) eingebunden werden. Hieraus ergeben sich datenschutzrechtliche Bedenken und eine Ladezeitverlängerung (ca. 500ms).</li>
+</ul>
+
+
+<h4>Interessante Links</h4>
+
+<p><a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> | <a href="http://nerdlabor.de/blog/2012/02/15/kollaboratives-arbeiten-mit-octopress-und-github-pages/">Github/ Octopress-Einstieg</a> | <a href="http://progit.org/book/ch3-2.html">Git-Versionskontrolle</a> | <a href="http://ethanschoonover.com/solarized">Solarized-Syntax-Highlighting</a> | <a href="http://www.forceappx.com/blog/2011/12/28/getting-fancybox-to-play-nice-with-octopress/">Fancybox-Implementierung</a> | <a href="https://github.com/thomasf/exitwp">Wordpress-Artikel-Export</a></p>
+
+<h4>Eure Meinung ist mir wichtig!</h4>
+
+<blockquote><p>Wie gefällt Euch die bisherige Umsetzung? Was sollte geändert werden? Ich freue mich auf alle Meinungen und Anregungen...</p></blockquote>
+]]></content>
+  </entry>
+  
+</feed>

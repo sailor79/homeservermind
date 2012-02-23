@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: SS4200-EHW | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/ss4200-ehw/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mein Intel® Entry Storage System SS4200-EHW (ähnlich FSC Scaleo)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo/"/>
+    <updated>2010-10-07T22:00:21+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo</id>
+    <content type="html"><![CDATA[<h2>Der Ursprung aller Gedanken</h2>
+
+<p>Natürlich mit der Front zur Wand aufgestellt, weil sich sonst die Drehzahl der Lüfter durch schlechte Luftströmung signifikant erhöht und dadurch das System lauter bis viel lauter wird. Daher auch leider weniger Wohnzimmer geeignet, es sei denn man hat eine freie Stellfläche zur Verfügung mit ausreichend Platz nach hinten.<!-- more --></p>
+
+<p><img src="../images/2010/10/homeserverkompakt-300x153-150x150.jpg" alt="Aussenansicht Intel SS4200" /><img src="../images/2010/10/innen-150x150.jpg" alt="Innenansicht Intel SS4200" /><img src="../images/2010/10/innen_umgeklappt-150x150.jpg" alt="Intel SS4200 innen umgeklappt" /></p>
+
+<p>Erweitert um:</p>
+
+<pre><code>- 2 GB DDR2 PC2-6400 ECC 800MHz Intel RAM
+- 2x WD 1,5TB SATA 7200 32MB Greenpower 24h-Festplatten
+</code></pre>
+
+<p>Die rechte und linke Festplattenhalterung lässt sich jeweils um knapp 180° umklappen; ideal um Hardware auszutauschen bzw. zu erweitern.</p>
+]]></content>
+  </entry>
+  
+</feed>

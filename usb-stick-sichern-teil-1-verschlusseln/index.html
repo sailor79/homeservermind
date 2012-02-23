@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>home-server-mind.com</title>
+  <title>USB-Stick im Alltag sicher benutzen, (Teil 1 von 6) - home-server-mind.com</title>
   <meta name="author" content="sailor79">
 
   
-  <meta name="description" content="Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten Wer seinen Octopress-Blog auch per rsync auf seinem Apache-Webserver veröffentlicht &hellip;">
+  <meta name="description" content="Einleitung Ein USB-Stick ist ein praktischer kleiner Datenspeicher für unterwegs. Nur was passiert, wenn man ihn verliert? Ich sehe hier gleich drei &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://sailor79.github.com/homeservermind">
+  <link rel="canonical" href="http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln">
   <link href="/homeservermind/favicon.png" rel="icon">
   <link href="/homeservermind/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/homeservermind/stylesheets/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" /> 
@@ -109,15 +109,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/homeservermind/fehlerseiten-in-octopress-einbinden/">Individuelle Fehlerseiten in Octopress einbinden</a></h1>
+      <h1 class="entry-title">USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)</h1>
     
     
       <p class="meta">
@@ -135,121 +132,115 @@
 
 
 
-<time datetime="2012-02-22T22:27:00+01:00" pubdate data-updated="true">22.02.2012</time>
+<time datetime="2012-01-29T16:20:08+01:00" pubdate data-updated="true">29.01.2012</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten</h2>
+<div class="entry-content"><h2>Einleitung</h2>
 
-<p>Wer seinen Octopress-Blog auch per <a href="http://wiki.ubuntuusers.de/rsync">rsync</a> auf seinem <a href="http://httpd.apache.org/">Apache-Webserver</a> veröffentlicht, hat es sehr einfach, eigene Fehlerseiten mittels <code>.htaccess</code> zu implementieren und die Standardfehlerseiten des Servers umzuleiten.</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/fehlerseiten-in-octopress-einbinden/">Weiterlesen →</a>
-    </footer>
-  
+<h3>Ein USB-Stick ist ein praktischer kleiner Datenspeicher für unterwegs. Nur was passiert, wenn man ihn verliert?</h3>
 
+<p>Ich sehe hier gleich drei Fragestellungen:</p>
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/homeservermind/good-by-wordpress/">Umzug von Wordpress nach Octopress </a></h1>
-    
-    
-      <p class="meta">
-        
+<blockquote><ol>
+<li>Was macht der Finder mit meinen persönlichen/ geschäftlichen Daten?</li>
+<li>Wie erhöhe ich die Wahrscheinlichkeit, dass ich den USB-Stick von dem/der Finder(in)     zurückzubekommen?</li>
+<li>Habe ich ein aktuelles Backup meiner USB-Stick Daten?<!-- more --></li>
+</ol>
+</blockquote>
 
+<p>In der Regel haben sich die meisten Nutzer vorher keine Gedanken gemacht oder gar Vorkehrungen getroffen, und geraten bei einem Verlust zurecht in Panik.</p>
 
+<p>In einer Reihe von nachfolgenden Artikeln möchte ich Sie systematisch an das Thema heranführen und Ihnen aufzeigen, wie einfach es ist, o.g. Probleme mit einfachen Mitteln zu vermeiden. Wenn Sie das komplette Konzept nacharbeiten bzw. umsetzen wollen, lesen sie einach immer bis zum Ende des Artikels und klicken den Link Weiterlesen.
+Ansonsten können Sie auch direkt quer in das jeweilige für Sie relevante Thema einsteigen, indem sie den folgenden Links folgen:</p>
 
-
-
+<ul>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">USB-Stick vorbereiten und mit TryCrypt teilweise verschlüsseln</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">TrueCrypt im Alltag benutzen für Anfänger</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Expertenmodus: TrueCrypt per Batch-Datei (halb-)automatisch mounten (Laufwerk einbinden)</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Kurzer Exkurs zum Thema: Den Finder animieren, den Stick zurückzugeben</a></li>
+<li>Manuelles Backup eines TrueCrypt-Containers erstellen</li>
+<li>Regelmäßiges automatisiertes inkrementielles Backup eines TrueCrypt-Containers erstellen</li>
+</ul>
 
 
+<p>Dieses Tutorial richtet sich in erster Linie an Windows-Benutzer, also Windows XP, Vista, Windows 7, Windows 7 Ultimate und 64bit. Konzeptionell ist es natürlich auf GNU/Linux und Mac OS X übertragbar. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">Weiterlesen&#8230;</a></p>
 
-  
-
-
-
-
-<time datetime="2012-02-19T19:04:00+01:00" pubdate data-updated="true">19.02.2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Endlich ist es vollzogen, die Migration dieser Website von <a href="http://de.wordpress.org/">Wordpress</a> nach <a href="https://github.com/imathis/octopress">Octopress</a>, einem <a href="http://jekyllrb.com/">Jekyll</a>-Framework.</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/good-by-wordpress/">Weiterlesen →</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/">Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<time datetime="2012-02-15T19:39:00+01:00" pubdate data-updated="true">15.02.2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Diese Installationsanleitung ist vorwiegend für Linux-Neulinge wie mich geschrieben. </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/">Weiterlesen →</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/homeservermind/blog/page/2/">&larr; Ältere Beiträge</a>
-    
-    <a href="/homeservermind/blog/archives">Blog Archiv</a>
-    
-  </div>
+<p><a class="fancybox" rel="Mindmap" href="../images/2012/01/Verlust-USB-Stick--1024x136.png" title="Mindmap"><img src="../images/2012/01/Verlust-USB-Stick-.png" alt="Mindmap"></a></p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">von <span class="fn">sailor79</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-01-29T16:20:08+01:00" pubdate data-updated="true">29.01.2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/homeservermind/blog/categories/backup/'>Backup</a>, <a class='category' href='/homeservermind/blog/categories/datenrestore/'>Datenrestore</a>, <a class='category' href='/homeservermind/blog/categories/festplatte/'>Festplatte</a>, <a class='category' href='/homeservermind/blog/categories/usb-stick/'>USB-Stick</a>, <a class='category' href='/homeservermind/blog/categories/windows-7/'>Windows 7</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/" data-via="homeservermind" data-counturl="http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/" title="Vorheriger Beitrag Website-Dateien automatisch per FTP auf den WHS sichern">&laquo; Website-Dateien automatisch per FTP auf den WHS sichern</a>
+      
+      
+        <a class="basic-alignment right" href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/" title="Nächster Beitrag: USB-Stick im Alltag sicher benutzen, (Teil 2 von 6)">USB-Stick im Alltag sicher benutzen, (Teil 2 von 6) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Kommentare</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
 <h1>About</h1>
-<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen&#8230;<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
+<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen...<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
 
 <section>
   <h1>Themenübersicht</h1>
@@ -259,7 +250,7 @@
 <section>
   <h1>Neueste Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Aktualisiere Status&#8230;</li>
+    <li class="loading">Aktualisiere Status...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -276,9 +267,31 @@
   <h1>Facebook? Nein danke!</h1>
 <a href="http://home-server-mind.com/facebook"><img alt="Not f'd — you won't find me on Facebook" style="border-width:0" title="Bildnachweis: http://www.fsf.org/facebook, Lizenz: CC BY-SA 3.0" width="445" height="148" src="http://home-server-mind.com/images/no-facebook-me.png" /></a>
 </section>
+<section>
+<h1>Verwandte Beiträge</h1>
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">USB-Stick im Alltag sicher benutzen, (Teil 4 von 6)</a><br />
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">USB-Stick im Alltag sicher benutzen, (Teil 3 von 6)</a><br />
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">USB-Stick im Alltag sicher benutzen, (Teil 2 von 6)</a><br />
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">USB-Stick im Alltag sicher benutzen (Exkurs)</a><br />
+
+  <a href="/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten/">WHS nicht erreichbar, wie komme ich sofort an meine Daten?</a><br />
+
+  <a href="/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/">Website-Dateien automatisch per FTP auf den WHS sichern</a><br />
+
+  <a href="/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/">Bootcamp 3.1 lässt sich (auch) nicht mit Apple Software Update auf Windows 7 64bit installieren</a><br />
+
+  <a href="/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/">Bootcamp 3.0 lässt sich nicht von der MacOS X-DVD auf Windows 7-64bit installieren</a><br />
+
+
+
 
   
 </aside>
+
 
     </div>
   </div>
@@ -291,7 +304,10 @@
       var disqus_shortname = 'homeservermind';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/';
+        var disqus_url = 'http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

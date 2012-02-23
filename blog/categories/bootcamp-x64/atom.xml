@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: BootCamp x64 | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/bootcamp-x64/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Bootcamp 3.1 lässt sich (auch) nicht mit Apple Software Update auf Windows 7 64bit installieren]]></title>
+    <link href="http://sailor79.github.com/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/"/>
+    <updated>2010-10-14T20:46:05+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren</id>
+    <content type="html"><![CDATA[<h2>Bootcamp 3.1 erscheint immer wieder im Apple Software-Update(r)</h2>
+
+<p>Nachdem wir im vorherigen <a href="http://home-server-mind.com/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/">Artikel</a> die erste Hürde mit Bootcamp 3.0 gemeister haben, wird es nun mit Bootcamp 3.1 um einiges aufwändiger.<!-- more --></p>
+
+<p>Ich habe dieses Update schon vorher auf der Apple-Download-Seite <a href="http://support.apple.com/de_DE/downloads/#macoscomponents">Apple-Download-Seite</a> runtergeladen und starte die Datei namens <code>BootCamp_3.1_64-bit.exe</code>, sodass ich das Apple Software-Update zunächst garnicht benötige.</p>
+
+<p>Dieses Update läuft scheinbar gut durch, allerdings stelle ich nach einem Neustart fest, dass dieses Update immer noch im Apple Software-Update(r)-Programm steht, mit welchen man unter Windows neue Treiber etc. erhält.</p>
+
+<p>OK denke ich, vielleicht lag es daran, dass ich es direkt geladen habe und es nicht über die Apple Software Update-Schnittstelle installiert habe. Gesagt getan, nun lädt Apple Software Update die Bootcamp3.1-Datei runter und installiert diese. Leider muss ich nach einem Neustart feststellen, dass dieses Update schon wieder dort unter verfügbare Updates auftaucht, d.h. nicht installiert wurde. Als Administrator starten und/oder mittels Kompatibilitäsmodus installieren hat hier leider nicht weitergeholfen.</p>
+
+<p>Nach einer Weile Suche in diversen Mac-Foren und einigem Ausprobieren bin ich darauf gestoßen, dass das Update Probleme mit dem Nvidea-Treiber (Nvidea Gforce 9400) innerhalb des 3.1 Update-Paketes in Kombination mit dem schon installierten Bootcamp 3.0 hat, d.h. die jeweils integrierten Nvidea-Treiber sind im Windows Installer scheinbar irgendwie nicht miteinander kompatibel.</p>
+
+<h4>Im Apple-Discussion-Forum fand ich dann schließlich doch den Ansatz einer Lösung, der sich nach einigem Ausprobieren zum folgendem Workaround entwickelt hat:</h4>
+
+<ol>
+<li><p>Zunächst lädt man sich auf der Apple-Download-Seite die Datei <a href="http://support.apple.com/downloads/DL979/de_DE/BootCamp_3.1_64-bit.exe">http://support.apple.com/downloads/DL979/de_DE/BootCamp_3.1_64-bit.exe</a>.</p></li>
+<li><p>Dann benötigt man den Universal Extractor, welchen man <a href="http://legroom.net/software/uniextract">hier</a> laden kann und installiert diesen.</p></li>
+<li><p>Nun Deinstallieren wir zunächst über Systemsteuerung/ Programm deinstallieren/ Bootcamp 3.0.</p></li>
+<li><p>Wir erstellen auf <code>c:\</code> einen Orderner namens "Source", also <code>c:\source</code> und kopieren dort die Datei <code>Bootcamp64.msi</code> hinein, zu finden auf der MacOS X-Install-DVD unter <code>Boot Camp\drivers\Apple\Bootcamp64.msi</code>.</p></li>
+<li><p>Jetzt widmen wir uns der unter 1. runtergeladener 3.1-Update-Datei und extrahieren diese mittels Klick mit rechter Maustaste auf diese Datei und wählen Uniextract hier. Damit erhält man vier neue Dateien:<br/>
+<img src="../images/2010/10/bootcampupdate64_msi-300x215.png" alt="bootcampupdate64.msi" /></p></li>
+<li><p>Wir kopieren die Datei <code>BootCampUpdate64.msp</code> auch in das unter 4. erstellte Verzeichnis <code>c:\source</code>.</p></li>
+<li><p>Nun führen wir unter Start/Ausführen folgenden Befehl aus und warten ungefähr zwei Minuten:
+<code>msiexec /a C:\SOURCE\BootCamp64.msi /p C:\SOURCE\BootCampUpdate64.msp</code>Damit erstellen wir neue Dateien, in denen die Treiber des 3.1-Update in das 3.0-Update gepackt werden, mit Ausnahme des Grafiktreibers, welchem wir uns später zuwenden.</p></li>
+<li><p>Nach einiger Zeit sieht das Verzeichnis <code>C:\source</code>so aus:<br/>
+<img src="../images/2010/10/extrahierteDateienUniextract-300x159.png" alt="extrahierte 4 Dateien mit Uniextract" /></p></li>
+<li><p>Nun starten wir die veränderte Datei <code>Bootcamp64.msi</code> und installieren diese. Es ist war zwar die ursprüngliche 3.0-Update-Datei, jetzt aber mit allen Treiber-Updates des Bootcamp 3.1-Updates.</p>
+
+<blockquote><p>Nach einem Neustart des Systems stellen wir fest, dass Bootcamp 3.1 installiert ist und  nicht mehr als verfügbares Update im Apple Software-Update(r) angezeigt wird.</p></blockquote></li>
+</ol>
+
+
+<p>Nun sollten alle Probleme mit dem Apple Trackpad, mit der roten LED beim Audio-Port und mit dem Wireless Keyboard sowie der Apple Magic Mouse behoben sein.</p>
+
+<h4>Allerdings haben wir so die Installation der Grafikkartentreiber übergangen und müssen deren Treiber aus dem 3.1 Update noch installieren:</h4>
+
+<p> i) Wir wenden uns nochmal der unter 5. extrahierten Dateien zu mit Fokus auf die Datei <code>NvideaGraphics64.cab</code>. Hier klicken wir wieder mittels rechter Maustaste auf diese Datei und wählen <em>Uniextract hier</em>, sodass wir wir eine zusätzliche Datei in diesem Ordner namens <code>NVideaGrfx64.cab</code>erhalten.</p>
+
+<p><img src="../images/2010/10/NVideaGraphics64-300x154.png" alt="NVideaGraphics64.cab" /></p>
+
+<p>  ii) Jetzt klicken wieder wieder mittels rechter Maustaste auf diese neue Datei und wählen <em>Uniextract hier</em>. Nun haben wir es komplett entpackt und finden Folgendes vor:</p>
+
+<p><img src="../images/2010/10/extrahierteGrafikkartentreiberNvidea-300x165.png" alt="extrahierte Grafikkartentreiber Nvidea" /></p>
+
+<p>   iii) Danach einfach auf <code>Setup.exe</code> (doppel-)klicken und der neue Grafikkartentreiber aus dem Bootcamp 3.1-Update wird auch (endlich) installiert.</p>
+
+<p>Die bei <a href="http://www.nvidea.de">NVidea</a> angebotenen Treiber für die Gforce 9400 funktionieren hier leider nicht, so dass diese Vorgehensweise zwingend erforderlich ist.</p>
+
+<p>iv) Letzter Neustart und endlich fertig.</p>
+
+<blockquote><p>Herzlichen Glückwunsch, nun haben Sie erfolgreich alle aktuellen Treiber inkl. Grafikkartentreiber mittels Bootcamp 3.1 auf Windows 7 64bit installiert.</p></blockquote>
+
+<p>Das ganze funktioniert übrigens auch bei den iMacs, z.B. 21" oder 27", hier haben nur die Grafikkartentreiber einen anderen Namen, da sie von ATI stammen, die Vorgehensweise ist jedoch grundsätzlich gleich.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bootcamp 3.0 lässt sich nicht von der MacOS X-DVD auf Windows 7-64bit installieren]]></title>
+    <link href="http://sailor79.github.com/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/"/>
+    <updated>2010-10-14T20:36:50+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren</id>
+    <content type="html"><![CDATA[<h2>"Boot Camp x64 is unsupported on this computer model"</h2>
+
+<p>Ich habe (u.a.) mein Macbook 13" (Baureihe Ende 2008) nach einem Virenbefall formatiert und zunächst Mac OS X Snow Leopard neu installiert, um danach (nach allen Apple Updates) mittels Bootcamp 3.0 die Windows 7 professional 64bit - Version in einer eigenen Partition zu installieren. Ergänzend sei gesagt, dass Virtualisierungsoftware wie Parallels Desktop für mich aus Perfomancegründen leider nicht  in Frage kommt.<!-- more --></p>
+
+<p>Nach Abschluss der Windowsinstallation stoße ich nun auf das erste Bootcamp-Problem:
+Beim Starten der der Setup.exe auf der MacOS X Install-DVD erhalte ich die Fehlermeldung:</p>
+
+<pre><code>         "Boot Camp x64 is unsupported on this computer model"
+</code></pre>
+
+<p>Na wunderbar denke ich, finde aber schnell eine Lösung, bevor ich mich dabei ertappe, erste Ansätze von Verschwörungstheorien zu entwickeln:</p>
+
+<p>Man starte auf der MacOS X Snow Leopard - Install DVD nicht die Datei <code>setup.exe</code>, sondern wählt direkt die 64bit-Version von Bootcamp die man dort findet: <code>D:\Boot Camp\drivers\Apple\Bootcamp64.msi</code>. Dabei steht <code>D:\</code> für den jeweiligen Laufwerksbuchstaben des CD/DVD-Laufwerks.</p>
+
+<p>Die Installation läuft jetzt wunderbar durch, und nach einem Neustart mache ich mich nun an das mir schon aus der  <a href="http://support.apple.com/de_DE/downloads/#macoscomponents">Apple-Website</a> bekannte Bootcamp 3.1-Update heran, welches wesentliche Verbesserungen mit sich bringen soll. Hier stoße ich leider auf größere Hindernisse, die aber letztlich auch machbar sind. Die Lösung bzw. das Workaround findet Ihr im nächsten Artikel, den Sie hier <a href="http://home-server-mind.com/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/">weiterlesen</a> können.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>home-server-mind.com</title>
+  <title>Umzug von Wordpress nach Octopress  - home-server-mind.com</title>
   <meta name="author" content="sailor79">
 
   
-  <meta name="description" content="Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten Wer seinen Octopress-Blog auch per rsync auf seinem Apache-Webserver veröffentlicht &hellip;">
+  <meta name="description" content="Endlich ist es vollzogen, die Migration dieser Website von Wordpress nach Octopress, einem Jekyll-Framework. Warum? An Wordpress mit SQL-Datenbank &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://sailor79.github.com/homeservermind">
+  <link rel="canonical" href="http://sailor79.github.com/homeservermind/good-by-wordpress">
   <link href="/homeservermind/favicon.png" rel="icon">
   <link href="/homeservermind/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/homeservermind/stylesheets/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" /> 
@@ -109,58 +109,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/homeservermind/fehlerseiten-in-octopress-einbinden/">Individuelle Fehlerseiten in Octopress einbinden</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<time datetime="2012-02-22T22:27:00+01:00" pubdate data-updated="true">22.02.2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten</h2>
-
-<p>Wer seinen Octopress-Blog auch per <a href="http://wiki.ubuntuusers.de/rsync">rsync</a> auf seinem <a href="http://httpd.apache.org/">Apache-Webserver</a> veröffentlicht, hat es sehr einfach, eigene Fehlerseiten mittels <code>.htaccess</code> zu implementieren und die Standardfehlerseiten des Servers umzuleiten.</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/fehlerseiten-in-octopress-einbinden/">Weiterlesen →</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/homeservermind/good-by-wordpress/">Umzug von Wordpress nach Octopress </a></h1>
+      <h1 class="entry-title">Umzug von Wordpress nach Octopress </h1>
     
     
       <p class="meta">
@@ -185,71 +139,135 @@
   </header>
 
 
-  <div class="entry-content"><p>Endlich ist es vollzogen, die Migration dieser Website von <a href="http://de.wordpress.org/">Wordpress</a> nach <a href="https://github.com/imathis/octopress">Octopress</a>, einem <a href="http://jekyllrb.com/">Jekyll</a>-Framework.</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/good-by-wordpress/">Weiterlesen →</a>
-    </footer>
-  
+<div class="entry-content"><p>Endlich ist es vollzogen, die Migration dieser Website von <a href="http://de.wordpress.org/">Wordpress</a> nach <a href="https://github.com/imathis/octopress">Octopress</a>, einem <a href="http://jekyllrb.com/">Jekyll</a>-Framework.<!-- more -->
+<img src="../images/2012/02/octo.jpg" height="151" width="816" alt="logo" title="Bilderquelle: wordpress.org, octopress.org, jekyllrb.com"></p>
+
+<h4>Warum?</h4>
+
+<ol>
+<li>An Wordpress mit SQL-Datenbank und PHP hat mich schon immer gestört, dass ich für einen kleinen Blog mit Kanonen auf Spatzen schieße. Man kauft sich ja auch keinen Lieferwagen, um ein Kasten Bier transportieren zu können.</li>
+<li>Der Octopress- bzw. Jekyll-Output ist statisch, d.h. die Ladezeiten verringern sich um ein Vielfaches.</li>
+<li>Statische Seiten sind sicher, ich muss mich nicht mehr ständig um Sicherheitspatches kümmern.
+Octopress Untertitel &#8220;A Blogging framework for hackers&#8221; meint nicht den Blogger, sondern den <em>Hacker</em>, der nun keine Möglichkeit mehr hat, den Server zu kapern. Im Zweifel schicke ich per rsync die Dateien neu, und das Thema hat sich erledigt.</li>
+<li>Deutlich weniger Spam über CSS-Hacks.</li>
+<li>Einfache Veröffentlichung mittels <a href="http://rake.rubyforge.org/">rake</a>-task über <a href="http://wiki.ubuntuusers.de/rsync">rsync</a>.</li>
+<li>Keep it simple! Datensparsamkeit und Datenvermeidung.</li>
+<li>Unkompliziertes Schreiben mittels Markdown und <a href="http://bradchoate.com/mt/docs/mtmanual_textile2.html">Textile</a> als Auszeichnungsprache.</li>
+<li>Versionskontrolle über github.</li>
+<li>Guter Syntax-Highlighter für Technik-Blogs.</li>
+</ol>
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/">Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)</a></h1>
-    
-    
-      <p class="meta">
-        
+<h4>Was ist Jekyll?</h4>
+
+<blockquote><p>Jekyll ist <cite>ein Postgenerator und kein Blogging-Framework, der direkte Vergleich mit Wordpress wäre also eher unfair. Jekyll will kein CMS mit komplettem Admin Control Panel und anderweitigen Komfortfunktionen sein, denn es ist ein schlankes Kommandozeilen-Tool, das aus den vorliegenden Artikel- und Layout-Dateien statische HTML-Webseiten generiert. Das mag nun Einsteiger wahrscheinlich abschrecken, für mich ist es aber genau richtig. Da Jekyll nur normale HTML-Dateien erzeugt, läuft es beinahe auf jedem beliebigen Webserver und benötigt auch keine Datenbank [&#8230;]</cite> Quelle: <a href="http://ganz-sicher.net/blog/blognews/Umstieg-von-Wordpress-nach-Jekyll/">Ganz-Sicher.Net Blog</a></p></blockquote>
+
+<h4>ToDo</h4>
+
+<h5>Folgende Themen habe ich noch nicht (vollständig) umgesetzt:</h5>
+
+<ul>
+<li><s>Kontaktformular (Da beisst sich die Katze in den Schwanz.)</s></li>
+<li>Ordentliche Suchfunktion, evtl. mittels bestfrom/anchorman oder indextank</li>
+<li>Implementierung 2-Klick-System <a href="http://www.heise.de/extras/socialshareprivacy/">(c&#8217;t)</a> für Socialbuttons</li>
+<li><s>Fancybox-Implementierung</s></li>
+<li>Latex-Einbindung mittels <a href="http://www.mathjax.org/docs/1.1/tex.html">MathJax</a></li>
+<li>Echte <a href="https://github.com/blackwinter/jekyll-localization">Lokalisation</a></li>
+<li><s>Javascript/CSS mit gzip komprimieren (.htaccess?)</s></li>
+<li><s>TagCloud</s></li>
+<li>Github-Versionskontrolle (leider bisher vernachlässigt&#8230;)</li>
+<li><a href="https://github.com/LawrenceWoodman/related_posts-jekyll_plugin"><s>Related Posts</s> </a></li>
+<li>CSS-Problem mit Menüleiste in IE/ Mozilla</li>
+<li>print.css für Artikeldruck erstellen</li>
+</ul>
 
 
+<h4>Nachteile</h4>
+
+<ul>
+<li>Anfänglich ist viel Handarbeit nötig, grundsätzliche Programmier- und Linuxkenntnisse sollten vorhanden sein.</li>
+<li>Kommentare sind dynamisch, daher muss ein externer Dienst (z.B. <a href="http://disqus.com/">disqus</a>) eingebunden werden. Hieraus ergeben sich datenschutzrechtliche Bedenken und eine Ladezeitverlängerung (ca. 500ms).</li>
+</ul>
 
 
+<h4>Interessante Links</h4>
 
+<p><a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> | <a href="http://nerdlabor.de/blog/2012/02/15/kollaboratives-arbeiten-mit-octopress-und-github-pages/">Github/ Octopress-Einstieg</a> | <a href="http://progit.org/book/ch3-2.html">Git-Versionskontrolle</a> | <a href="http://ethanschoonover.com/solarized">Solarized-Syntax-Highlighting</a> | <a href="http://www.forceappx.com/blog/2011/12/28/getting-fancybox-to-play-nice-with-octopress/">Fancybox-Implementierung</a> | <a href="https://github.com/thomasf/exitwp">Wordpress-Artikel-Export</a></p>
 
+<h4>Eure Meinung ist mir wichtig!</h4>
 
-
-  
-
-
-
-
-<time datetime="2012-02-15T19:39:00+01:00" pubdate data-updated="true">15.02.2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Diese Installationsanleitung ist vorwiegend für Linux-Neulinge wie mich geschrieben. </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/">Weiterlesen →</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/homeservermind/blog/page/2/">&larr; Ältere Beiträge</a>
-    
-    <a href="/homeservermind/blog/archives">Blog Archiv</a>
-    
-  </div>
+<blockquote><p>Wie gefällt Euch die bisherige Umsetzung? Was sollte geändert werden? Ich freue mich auf alle Meinungen und Anregungen&#8230;</p></blockquote>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">von <span class="fn">sailor79</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-02-19T19:04:00+01:00" pubdate data-updated="true">19.02.2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/homeservermind/blog/categories/octopress/'>Octopress</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sailor79.github.com/homeservermind/good-by-wordpress/" data-via="homeservermind" data-counturl="http://sailor79.github.com/homeservermind/good-by-wordpress/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/" title="Vorheriger Beitrag Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)">&laquo; Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)</a>
+      
+      
+        <a class="basic-alignment right" href="/homeservermind/fehlerseiten-in-octopress-einbinden/" title="Nächster Beitrag: Individuelle Fehlerseiten in Octopress einbinden">Individuelle Fehlerseiten in Octopress einbinden &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Kommentare</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
 <h1>About</h1>
-<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen&#8230;<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
+<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen...<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
 
 <section>
   <h1>Themenübersicht</h1>
@@ -259,7 +277,7 @@
 <section>
   <h1>Neueste Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Aktualisiere Status&#8230;</li>
+    <li class="loading">Aktualisiere Status...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -276,9 +294,17 @@
   <h1>Facebook? Nein danke!</h1>
 <a href="http://home-server-mind.com/facebook"><img alt="Not f'd — you won't find me on Facebook" style="border-width:0" title="Bildnachweis: http://www.fsf.org/facebook, Lizenz: CC BY-SA 3.0" width="445" height="148" src="http://home-server-mind.com/images/no-facebook-me.png" /></a>
 </section>
+<section>
+<h1>Verwandte Beiträge</h1>
+
+  <a href="/homeservermind/fehlerseiten-in-octopress-einbinden/">Individuelle Fehlerseiten in Octopress einbinden</a><br />
+
+
+
 
   
 </aside>
+
 
     </div>
   </div>
@@ -291,7 +317,10 @@
       var disqus_shortname = 'homeservermind';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://sailor79.github.com/homeservermind/good-by-wordpress/';
+        var disqus_url = 'http://sailor79.github.com/homeservermind/good-by-wordpress/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

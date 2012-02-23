@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: Batch-Dateien | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/batch-dateien/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 4 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/"/>
+    <updated>2012-01-30T02:07:51+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden</id>
+    <content type="html"><![CDATA[<h2>TrueCrypt-Container per Batch-Script halbautomatisch (un-)mounten bzw. als Laufwerk einbinden</h2>
+
+<p>Nachdem wir einen TrueCrypt-Container <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">hier</a> erstellt haben und nun auch wissen, wie wir ihn in der Praxis als <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Windows-Laufwerk einbinden</a>, gehen wir nun einen Schritt weiter.
+Da es ein bißchen lästig ist, den Container jedesmal manuell als Laufwerk in Windows einzubinden (mounten), habe ich ein kleines Script erstellt, welches dies (halb-)automatisch für uns erledigt.<!-- more --> Warum halbautomatisch? Das Kennwort sollte und muss immer noch manuell eingegeben werden, da es sonst unverschlüsselt für jeden lesbar wäre und wir uns die ganze Arbeit hätten sparen können.</p>
+
+<p>Im unserem Ordner <code>Secure</code> auf dem USB-Stick erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>Start.bat</code> ab.
+Wichtig ist, dass sich die Datei <code>Start.bat</code> im gleichen Ordner wie die Datei <code>Truecrypt.exe</code> sowie dem TrueCrypt-Container befindet!</p>
+
+<blockquote><p>Allerdings muss jeder zwei kleine Anpassungen im Code machen:</p></blockquote>
+
+<ol>
+<li><p>In Zeile 11 kann das <code>J</code> in <code>set Wunsch_LW=J</code> durch einen anderen Wunschlaufwerksbuchstaben ersetzt werden. Dieser wird, sofern er nicht schon in Benutzung ist, als Laufwerk benutzt. Andernfalls wird der erste freie Buchstabe im aktuell laufenden System ausgelesen und stattdessen benutzt.</p></li>
+<li><p>In Zeile 13 MUSS <code>namedatendatei</code> in <code>set Container=namedatendatei</code> durch den eigenen gewählten Namen der TrueCryptcontainer-Datei ersetzt werden. In unserem <a href="http://home-server-mind.com/?p=784">Beispiel</a> haben wir den Container bzw. die Datei einfach <code>daten</code> genannt.
+Man kann die Datei übrigens auch ein wenig tarnen, indem man sie z.B. Tabelle.xls oder werbung.mpeg benennt.</p></li>
+</ol>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Start.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'><span class="c">::&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;em&gt;&lt;strong&gt;&lt;strong&gt;</span>
+</span><span class='line'><span class="c">:: mw2012, TrueCryptcontainer mit dieser BATCH-Datei automatisch mit Wunschlaufwerksbuchstabe mounten&lt;/strong&gt;&lt;/strong&gt;</span>
+</span><span class='line'><span class="c">:: Wenn Buchstabe schon belegt, wird erster freier Buchstabe im System genommen und als Hinweis ausgeben&lt;/em&gt;</span>
+</span><span class='line'><span class="c">:: Achtung: Dieser Batchdatei muss im selben Ordner wie TrueCrpt.exe sowie Containerdatei liegen!&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;</span>
+</span><span class='line'><span class="c">:: Dass Kennwort bzw. die Passphrase wird nach dem Aufruf abgefragt. Bitte NIE hier hinterlegen!!!!!!!!!&lt;em&gt;</span>
+</span><span class='line'><span class="c">::&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;************&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::&lt;strong&gt;&lt;strong&gt;&lt;em&gt;Ab hier Änderung ERFORDERLICH!&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;&lt;em&gt;</span>
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;J&#39; durch Wunschlaufwerksbuchstaben ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Wunsch_LW</span><span class="o">=</span>J
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;daten3&#39; durch Containernamen ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Container</span><span class="o">=</span>namedatendatei
+</span><span class='line'><span class="c">::&lt;/em&gt;&lt;/strong&gt;&lt;/strong&gt;Ab hier KEINE Änderungen machen&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;*********&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: wenn Laufwerk nicht vorhanden, dann mounten</span>
+</span><span class='line'><span class="c">:: An dieser Stelle könnten man noch einen Anti-Keylogger einbauen, z.B. MOK</span>
+</span><span class='line'><span class="k">cd</span> <span class="nv">%Wunsch_LW%</span>: &amp;amp;&amp;amp; <span class="k">goto</span> <span class="nl">LW_Vorhanden</span>
+</span><span class='line'><span class="c">:: Fehlermeldung,dass LW nicht vorhanden (gewollt), lässt sich mir 2&gt;NUL und &gt;NUL nicht umleiten</span>
+</span><span class='line'><span class="k">echo</span> ...und daher den gewollten Laufwerksbuchstaben benutzen.
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%Wunsch_LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'>exit&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: Wenn Laufwerk vorhanden, dann ersten freien Buchstaben suchen &gt;</span>
+</span><span class='line'><span class="c">:: Quelle: Codeschnipsel aus http://www.heise.de/ct/hotline/Freien-Laufwerksbuchstaben-finden-322906.html</span>
+</span><span class='line'><span class="nl">:LW_Vorhanden</span>
+</span><span class='line'><span class="k">if</span> not <span class="s2">&quot;%OS%&quot;</span><span class="o">==</span><span class="s2">&quot;Windows_NT&quot;</span> exit <span class="n">/b</span>
+</span><span class='line'><span class="k">setlocal</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">ll</span><span class="o">=</span>D E F G H I J K L M N O P Q R S T U V W X Y Z
+</span><span class='line'><span class="k">for</span> <span class="nv">%%l</span> in (<span class="nv">%ll%</span>) <span class="k">do</span> (
+</span><span class='line'>  <span class="k">set</span> <span class="nv">LW</span><span class="o">=</span><span class="nv">%%l</span>
+</span><span class='line'>  mountvol <span class="nv">%%l:</span> <span class="n">/L</span> <span class="p">&gt;</span><span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   subst <span class="p">|</span> <span class="n">findstr</span> <span class="n">/B</span> <span class="s2">&quot;%%l:&quot;</span> <span class="p">&gt;</span> <span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   net use <span class="nv">%%l:</span> <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;amp;<span class="m">1</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">gotone</span>
+</span><span class='line'>   )
+</span><span class='line'>  )
+</span><span class='line'>)
+</span><span class='line'><span class="k">echo</span> Zurzeit ist kein Laufwerksbuchstabe frei<span class="p">,</span> Container konnte nicht NICHT eingebunden werden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit <span class="n">/b</span>
+</span><span class='line'><span class="nl">:gotone</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">:: Laufwerk unter gefundenem freien Buchstaben mounten und Hinweismeldung ausgeben</span>
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'><span class="k">echo</span> Der gewünschte Laufwerksbuchstabe ist schon vergeben. Der Container ist nun erfolgreich als Laufwerk <span class="nv">%LW%</span>: eingebunden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<blockquote><p>Das war es schon. Statt den umständlichen Weg über TrueCrypt startet man mit einem Doppelklick nur noch die Datei <code>Start.bat</code>, und gibt sein Kennwort ein. Der Rest geht automatisch.</p></blockquote>
+
+<p>Hinweis: Im obigen Script ist übrigens ein Platzhalter für einen Anti-<a href="http://de.wikipedia.org/wiki/Keylogger">Keylogger</a> wie <a href="http://www.myplanetsoft.com/free/mouse-only-keyboard.php">MOK</a> für ganz vorsichtige bzw. konsequente Zeitgenossen eingebaut. Hier würde man die Zeile 17 durch <code>Start %cd%/mok.exe</code> ersetzen und müsste in Zeile 23 und zwischen Zeile 47 und 48 noch <code>pskill %cd%/mok.exe</code> einfügen. Der Prozess-Stopper psKill ist allerdings nicht standardmäßig in Windows integriert und kann <a href="http://technet.microsoft.com/en-us/sysinternals/bb896683">hier</a> geladen werden.</p>
+
+<h4>TrueCrypt-Container trennen</h4>
+
+<p>Um das TrueCrypt-Laufwerk wieder zu schließen (unmounten), kann man entweder in TrueCrypt auf <em>Alle Trennen</em> klicken, oder eine kleine Batch-Datei namens <code>Stop.bat</code> mit nachfolgendem Inhalt wie oben auch im gleichen Ordner erstellen:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Stop.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span>&gt;<span class="p">&lt;</span><span class="n">code</span>&gt;@<span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'><span class="k">echo</span> Entferne alle TrueCrypt-Laufwerke...
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/d</span> <span class="n">/q</span>
+</span><span class='line'>exit
+</span><span class='line'>&lt;<span class="n">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Weiterlesen...</a></p>
+]]></content>
+  </entry>
+  
+</feed>

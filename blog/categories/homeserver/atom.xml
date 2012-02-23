@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: homeserver | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/homeserver/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Website-Dateien automatisch per FTP auf den WHS sichern]]></title>
+    <link href="http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/"/>
+    <updated>2012-01-08T20:16:32+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern</id>
+    <content type="html"><![CDATA[<p>Dieser Artikel beschreibt eine Möglichkeit, alle Dateien im Webspace (der auf der eigenen Domain gehosteten Wordpress-Website) mit Dateiattributen und Ordnerrechten automatisch zu sichern. Ziel ist es, täglich eine automatische Sicherung über FTP durchzuführen. Eine Beschreibung der Datenbanksicherung über phpmyadmin wird in diesem Artikel noch nicht betrachtet.<!-- more --></p>
+
+<h4>Hierzu habe ich folgende Anforderungen an das Backup für meine private Website:</h4>
+
+<blockquote><ul>
+<li>Kommandozeilenbasiert, so dass ein Shell-Script zeitgesteuert (automatisch) über den Windows-Taskplaner aufgerufen werden kann</li>
+<li>Ausführung über den Windows Home Server (WHS) möglich, da dieser durchgängig läuft</li>
+<li>Traffic schonend, d.h. inkrementielles Backup, so dass nur geänderte Dateien heruntergeladen werden</li>
+<li>sFTP wäre schön, ist für meine private Seite aber nicht zwingend erforderlich</li>
+<li>Ein Backup für die letzten sieben Tage (1/Tag) ist für mich ausreichend</li>
+</ul>
+</blockquote>
+
+<p>Nach längerer Recherche habe ich mich für das freie GNU-Projekt Wget entschieden, welches <a href="http://gnuwin32.sourceforge.net/packages/wget.htm">hier</a> als 32bit-Windows-Version erhältlich ist. Leider unterstützt Wget nicht sFTP, was in meinem Fall jedoch kein Problem darstellt. Weiterhin benötige ich zur zuverlässigen Ermittlung des Wochentags noch das Kommandozeilentool robocopy, welches in Windows Vista, Windows 7 und Windows Server 2008 standardmäßig integriert ist. Da der Windows Home Server (erste Version) auf Windows Server 2003-SP3 basiert, muss man hier noch die <a href="http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=17657">Microsoft Resource Kit Tools</a> auf dem WHS nachinstallieren.</p>
+
+<p>Nun ist alles vorbereitet, um das Backup in einem Batch-Script zu implementieren, so dass dieses später nur noch über den Taskplaner automatisch aufgerufen werden muss. Hierzu erstellt man sich zunächst auf dem WHS einen Ordner <code>Backup/websites/domain.tld</code>. Mit <code>domain.tld</code> ist der Name der zu sichernden Website gemeint, z.b. <code>home-server-mind.com</code>. In diesem Verzeichnis werden nun die Unterordner <code>Montag</code>, <code>Dienstag</code>,...,<code>Sonntag</code> erstellt.</p>
+
+<p>Im Ordner <code>Backup/websites/domain.tld</code> erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>week_rotation.bat</code>.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[week_rotation.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">::-- FTP-Backup mit wget und robocopy als 7-Tage-Woche-Rotation</span>
+</span><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">on</span> &amp;amp; <span class="k">setlocal</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::--mittels wget und ftp-logindaten Daten ins aktuelle Verzeichnis dieser</span>
+</span><span class='line'><span class="c">::  batch-Datei holen (spiegeln inkl. Dateiatrribute, Ordnerrechte etc.)</span>
+</span><span class='line'>wget -m -o backup.log ftp:<span class="n">//user:password@domain.tld/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::--- Wochentag ermitteln für Ordnernamen, danke an User Biber von administrator.de</span>
+</span><span class='line'><span class="k">for</span> <span class="n">/f</span> <span class="s2">&quot;tokens=3&quot;</span> <span class="nv">%%i</span> in (<span class="s1">&#39;robocopy /?&lt;sup&gt;|find&lt;/sup&gt; &quot;Started&quot;&#39;</span>) <span class="k">do</span> (
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Mon&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Montag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Tue&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Dienstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Wed&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Mittwoch&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Thu&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Donnerstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Fri&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Freitag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sat&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Samstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sun&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Sonntag&quot;</span>
+</span><span class='line'>   )&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::-- Daten in aktuellen Wochentag-Unterordner inkl. aller Dateiattribute/Rechte verschieben</span>
+</span><span class='line'>robocopy D:\Backup\websites\domain.tld\new D:\Backup\websites\domain.tld\<span class="nv">%wochentag%</span> <span class="n">/MIR</span>
+</span><span class='line'>RMDIR D:\Backup\websites\domain.tld\new
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Im Code muss nun in Zeile 5 der Ausdruck <code>user:password</code> durch die persönlichen FTP-Login-Daten ersetzt werden sowie in den Zeilen 5, 20 und 21 der Ausdruck <code>domain.tld</code> durch den Namen der eigenen Website (ohne <code>http://www</code>).</p>
+
+<p>Zu guter letzt muss die Datei <code>week_rotation.bat</code> in den Taskplaner eingebunden werden. Dazu verbindet man sich zunächst mit dem WHS per Remotedesktopverbindung (nicht über die Windows Home Server-Konsole) und öffnet über START > SYSTEMSTEUERUNG > GEPLANTE TASKS den <em>Geplanten Task hinzufügen</em>-Dialog. Hier nimmt man gemäß nachfolgender Bilder in den ersten drei Reitern die abgebildeten Einstellungen vor:</p>
+
+<p>Unter <em>TASK > AUSFÜHREN</em> wählt man die soeben erstellte Datei <code>week_rotation.bat</code>, unter <em>TASK > AUSFÜHREN IN</em> wählt man den gleichen Ordner und unter <em>TASK > AUSFÜHREN ALS</em> sollte ein lokaler Administrator gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r1.jpg" alt="Reiter Task" /></p>
+
+<p>Im Reiter <em>Zeitplan</em> habe ich die tägliche Ausführung um 00:10 Uhr gewählt, da mein Internet-Provider ggf. um 00:00 Uhr täglich eine kurze Zwangstrennung durchführt. Die Uhrzeit sollte also sinnvoll gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r2.jpg" alt="Reiter Zeitplan" /></p>
+
+<p>Im Reiter <em>Einstellungen</em> lasse ich den Task nach sechs Stunden beenden, falls er sich aufgehangen hat und setze mindestens ein Häckchen bei Computer zum Ausführen reaktivieren:</p>
+
+<p><img src="../images/2012/01/task_r3.jpg" alt="Reiter Einstellungen" /></p>
+
+<blockquote><p>Das war es schon. Zum Testen die Datei <code>week_rotation.bat</code> manuell starten und überprüfen, ob es funktionert. Ggf. sollte man noch seine Firewall-Einstellungen betreffend Wget und den Ports 20 und 21 überprüfen.</p></blockquote>
+
+<hr />
+
+<p><em>Weiterführende Literatur:</em>
+Wget <a href="http://wget.addictivecode.org/FrequentlyAskedQuestions">FAQ</a>, <a href="http://www.gnu.org/software/wget/manual/html_node/index.html">Manual</a> | Robocopy <a href="http://de.wikibooks.org/wiki/Datensicherung/_Werkzeuge/_Kopieren/_ROBOCOPY">Allgemein</a>, <a href="http://technet.microsoft.com/de-de/library/cc733145%28WS.10%29.aspx">FAQ</a> | Batch-Programmierung <a href="http://www.admini.de/batch-infos.htm">Allgemein</a>, <a href="http://de.wikibooks.org/wiki/Batch-Programmierung">Beispiele</a> | Cron-Jobs unter Windows <a href="http://www.msxfaq.de/howto/mstask.htm">Allgemein</a> | Misc <a href="http://en.wikipedia.org/wiki/Backup_rotation_scheme">Backup-Rotations-Schemata</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[WHS nicht erreichbar, wie komme ich sofort an meine Daten?]]></title>
+    <link href="http://sailor79.github.com/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten/"/>
+    <updated>2010-10-08T10:18:28+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten</id>
+    <content type="html"><![CDATA[<h3>Gedanken für den Notfall</h3>
+
+<p>Die Share-Ordner auf dem WHS sind zugegeben sehr nützlich, um Dokumente und andere Daten zentral zu speichern, Musik und Filme im eigenen Netz zu streamen und Clients zu sichern.</p>
+
+<p>Doch was ist, wenn man wie ich fast alles nur noch auf dem WHS speichert, dieser jedoch plötzlich nicht mehr funktioniert bzw. nicht mehr erreichbar ist und man jedoch dringend an die Daten kommen muss? (Das kann wie in meinem Fall übrigens sehr schnell passieren wenn man versucht, VPN uber RAS auf dem WHS konfiguriert und danach gar nichts mehr geht, aber dazu ein anderes mal mehr…) Da nutzt einem zunachst auch kein RAID bzw. die WHS-Dublizierung o.ä.<!-- more --></p>
+
+<h4>Die von der individuellen Konfiguration unabhängigste Lösung für jedermann im Notfall ist ganz einfach:</h4>
+
+<p>Man kaufe sich ein 3,5” Festplattengehause, in meinen Fall bei SATA-HDD, mit SATA-Anschluss, in einem Elektronikfachmarkt seines Vertrauens, z.B. das Trekstor DataStation maxi g.u-Gehäuse, für das ich knapp 20 Euro bezahlt habe. Dieses kann man später mit einer neuen Festplatte auch als externe Backuplösung fur den Server und externes Backup der Client-Backups nutzen, falls die Server-Festplatten mal alle defekt sind.</p>
+
+<p>Nun baut man die Festplatte(n) aus dem  Homeserver aus, integriert diese in das Gehäuse und schließt es per USB  an ein PC oder Notebook an und sucht nach dem Ordner <code>D:/d$/DE/shares</code>.
+Jetzt kann man bequem seine Daten benutzen und ggf. retten, bevor man sich beizeiten dem eigentlichen Übel widmet, nämlich der Frage, warum der Server nicht mehr erreichbar ist.</p>
+
+<p>Diese Vorgehensweise schützt nicht vor defekten Server-Festplatten. Hier wäre es sinnvoll, sich zusätzlich zum Gehäuse eine Festplatte zu kaufen, mit der man wichtigen Dateien regelmäßig auf dieser USB-HDD sichert. Gleichzeitig besitzt man dieses Gehäuse, um im Bedarfsfall erst mal die aktuelleren Daten auf dem Server zu sichten, da im Regelfall die HDD nicht defekt ist, sondern “nur” ein Konfigurations- oder Netzproblem besteht.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mein Intel® Entry Storage System SS4200-EHW (ähnlich FSC Scaleo)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo/"/>
+    <updated>2010-10-07T22:00:21+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo</id>
+    <content type="html"><![CDATA[<h2>Der Ursprung aller Gedanken</h2>
+
+<p>Natürlich mit der Front zur Wand aufgestellt, weil sich sonst die Drehzahl der Lüfter durch schlechte Luftströmung signifikant erhöht und dadurch das System lauter bis viel lauter wird. Daher auch leider weniger Wohnzimmer geeignet, es sei denn man hat eine freie Stellfläche zur Verfügung mit ausreichend Platz nach hinten.<!-- more --></p>
+
+<p><img src="../images/2010/10/homeserverkompakt-300x153-150x150.jpg" alt="Aussenansicht Intel SS4200" /><img src="../images/2010/10/innen-150x150.jpg" alt="Innenansicht Intel SS4200" /><img src="../images/2010/10/innen_umgeklappt-150x150.jpg" alt="Intel SS4200 innen umgeklappt" /></p>
+
+<p>Erweitert um:</p>
+
+<pre><code>- 2 GB DDR2 PC2-6400 ECC 800MHz Intel RAM
+- 2x WD 1,5TB SATA 7200 32MB Greenpower 24h-Festplatten
+</code></pre>
+
+<p>Die rechte und linke Festplattenhalterung lässt sich jeweils um knapp 180° umklappen; ideal um Hardware auszutauschen bzw. zu erweitern.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Individuelle Fehlerseiten in Octopress einbinden - home-server-mind.com</title>
+  <meta name="author" content="sailor79">
+
+  
+  <meta name="description" content="Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten Wer seinen Octopress-Blog auch per rsync auf seinem Apache-Webserver veröffentlicht &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden">
+  <link href="/homeservermind/favicon.png" rel="icon">
+  <link href="/homeservermind/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/homeservermind/stylesheets/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" /> 
+ <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var s = document.createElement('script');
+    var t = document.getElementsByTagName('script')[0];
+
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+
+    t.parentNode.insertBefore(s, t);
+ })();
+/* ]]> */
+</script>
+
+
+
+  <script src="/homeservermind/javascripts/modernizr-2.0.js"></script>
+  <script src="/homeservermind/javascripts/ender.js"></script>
+  <script src="/homeservermind/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/homeservermind/atom.xml" rel="alternate" title="home-server-mind.com" type="application/atom+xml">
+
+ 
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28877764-1']);
+    _gaq.push (['_gat._anonymizeIp']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <!-- Add fancyBox -->
+
+  <script type="text/javascript" src="/homeservermind/javascripts/jquery.fancybox.pack.js?v=2.0.4"></script>
+  <!-- Add fancyBox jQuery -->
+  <script type="text/javascript">
+    jQuery.noConflict();    // prevents conflicts with Ender.js, use jQuery instead of $
+    jQuery(document).ready(function() {
+        jQuery(".fancybox").fancybox();
+    });
+  </script>
+  <!-- End fancyBox insert -->
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/homeservermind/">home-server-mind.com</a></h1>
+  
+    <h2>gedanken.konzepte.projekte</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/homeservermind/atom.xml" rel="subscribe-rss" title="via RSS abonnieren">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:sailor79.github.com/homeservermind" />
+    <input class="search" type="text" name="q" results="0" placeholder="Suchen"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/homeservermind/">Startseite</a></li>
+  <li><a href="/homeservermind/blog/archives">Blog</a></li>
+</ul>
+
+
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Individuelle Fehlerseiten in Octopress einbinden</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-02-22T22:27:00+01:00" pubdate data-updated="true">22.02.2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten</h2>
+
+<p>Wer seinen Octopress-Blog auch per <a href="http://wiki.ubuntuusers.de/rsync">rsync</a> auf seinem <a href="http://httpd.apache.org/">Apache-Webserver</a> veröffentlicht, hat es sehr einfach, eigene Fehlerseiten mittels <code>.htaccess</code> zu implementieren und die Standardfehlerseiten des Servers umzuleiten.<!-- more --></p>
+
+<p>Meine Anforderungen an Fehlerseiten:</p>
+
+<ul>
+<li>Fehlerseiten sollen im Artikelbereich landen (gleiches Layout)</li>
+<li>Fehlerseiten sollen die Möglichkeit bieten, andere Posts zu wählen (Archiv anzeigen)</li>
+</ul>
+
+
+<h3>Was sind Fehlerseiten?</h3>
+
+<blockquote><p><cite>Eine Fehlerseite ist eine Webseite, die angezeigt wird, wenn man beispielsweise auf einen Toten Link im Internet klickt bzw. eine nicht existente URL aufruft. Die meisten Browser zeigen dabei die vom Webserver gelieferte Standard-Seite [&#8230;]</cite> Quelle: <a href="http://de.wikipedia.org/wiki/Fehlerseite">wiki</a></p></blockquote>
+
+<h3>Welche Fehler bzw. http-Statuscodes für Fehler gibt es?</h3>
+
+<p>Hier können Sie sich allgemein über <a href="http://de.selfhtml.org/servercgi/server/httpstatuscodes.htm">http-Statuscodes</a> informieren.<br/>
+Ich möchte in meinem Blog nur Fehlerseiten für die häufigsten Statusfehlercodes einbinden:</p>
+
+<ol>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not Found (wichtig!, z.B. bei Tippfehlern, verwaisten Seiten)</li>
+<li>500: Internal Server Error</li>
+</ol>
+
+
+<h3>Vorbereitung</h3>
+
+<p>Zunächst stellen wir in unserem Octopress-Verzeichnis im Unterverzeichnis <code>source</code> einen neuen Ordner <code>error</code>.</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir octopress/source/error
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Auf Github bin ich über folgendes <a href="https://github.com/robertkowalski/octopress/commit/31a3fb0b393450d17ec6c82ba724dc9d202edc82#diff-0">Fehlerseiten-Markdown</a> gestoßen und habe es jeweils an meine Bedürfnisse angepasst.<br/>
+Damit erstellen wir für jeden Fehler eine Fehlerseite und speichern sie im Ordner <code>octopress/source/error</code> unter den Namen <code>401.html</code>, <code>403.html</code>,<code>404.html</code> und <code>500.html</code> ab:</p>
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 404]  (401.html)</span> <a href='/homeservermind/downloads/code/401.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 401 Unauthorized.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 403]  (403.html)</span> <a href='/homeservermind/downloads/code/403.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 403 Forbidden (Verboten).
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 404]  (404.html)</span> <a href='/homeservermind/downloads/code/404.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Fehler 404, Entschuldigung. Die angeforderte Seite wurde nicht gefunden.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 500]  (500.html)</span> <a href='/homeservermind/downloads/code/500.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, Fehler 500 auf sicheren Seiten.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nun fügen wir im Verzeichnis <code>../octopress/source</code> die Datei <code>.htaccess</code> hinzu. In dieser leiten wir möglicher Fehler auf unsere neuen Seiten um:</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] (.htaccess)  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ErrorDocument 401 /error/401.html 
+</span><span class='line'>ErrorDocument 403 /error/403.html 
+</span><span class='line'>ErrorDocument 404 /error/404.html 
+</span><span class='line'>ErrorDocument 500 /error/500.html</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wichtig ist, dass die Dateiberechtigung für die Datei <code>.htaccess</code> 644 (Schreibrechte für den Benutzer, Leserechte für alle) lautet. Dies kann man entweder im Terminal machen indem man im Verzeichnis <code>octopress/source</code> folgenden Befehl eingibt:</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chmod 644 .htaccess</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bequemer ist natürlich ein FTP-Client wie <a href="http://filezilla-project.org/">File-Zilla</a>.</p>
+
+<p>Fertig. <a href="http://home-server-mind.com/tippfehlerseitenichtvorhanden">DEMO anschauen?</a></p>
+
+<p>Bei Fragen, Anregungen, Probleme einfach einen Kommentar schreiben.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">von <span class="fn">sailor79</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-02-22T22:27:00+01:00" pubdate data-updated="true">22.02.2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/homeservermind/blog/categories/octopress/'>Octopress</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/" data-via="homeservermind" data-counturl="http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/homeservermind/good-by-wordpress/" title="Vorheriger Beitrag Umzug von Wordpress nach Octopress ">&laquo; Umzug von Wordpress nach Octopress </a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Kommentare</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+<h1>About</h1>
+<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen...<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
+
+<section>
+  <h1>Themenübersicht</h1>
+    <span id="tag-cloud"><a href='/homeservermind/homeservermindblog/categories/allgemein' style='font-size: 117.14285714285714%'>Allgemein</a> <a href='/homeservermind/homeservermindblog/categories/apple' style='font-size: 117.14285714285714%'>Apple</a> <a href='/homeservermind/homeservermindblog/categories/backup' style='font-size: 160.0%'>Backup</a> <a href='/homeservermind/homeservermindblog/categories/batch-dateien' style='font-size: 108.57142857142857%'>Batch-dateien</a> <a href='/homeservermind/homeservermindblog/categories/bootcamp' style='font-size: 117.14285714285714%'>Bootcamp</a> <a href='/homeservermind/homeservermindblog/categories/bootcamp-x64' style='font-size: 117.14285714285714%'>Bootcamp x64</a> <a href='/homeservermind/homeservermindblog/categories/brother' style='font-size: 108.57142857142857%'>Brother</a> <a href='/homeservermind/homeservermindblog/categories/datenrestore' style='font-size: 151.42857142857144%'>Datenrestore</a> <a href='/homeservermind/homeservermindblog/categories/festplatte' style='font-size: 142.85714285714286%'>Festplatte</a> <a href='/homeservermind/homeservermindblog/categories/hardware' style='font-size: 117.14285714285714%'>Hardware</a> <a href='/homeservermind/homeservermindblog/categories/homeserver' style='font-size: 125.71428571428572%'>Homeserver</a> <a href='/homeservermind/homeservermindblog/categories/netzwerk' style='font-size: 108.57142857142857%'>Netzwerk</a> <a href='/homeservermind/homeservermindblog/categories/octopress' style='font-size: 117.14285714285714%'>Octopress</a> <a href='/homeservermind/homeservermindblog/categories/ss4200-ehw' style='font-size: 108.57142857142857%'>Ss4200-ehw</a> <a href='/homeservermind/homeservermindblog/categories/treiber' style='font-size: 108.57142857142857%'>Treiber</a> <a href='/homeservermind/homeservermindblog/categories/truecrypt' style='font-size: 134.28571428571428%'>Truecrypt</a> <a href='/homeservermind/homeservermindblog/categories/ubuntu-64bit' style='font-size: 108.57142857142857%'>Ubuntu 64bit</a> <a href='/homeservermind/homeservermindblog/categories/usb-stick' style='font-size: 142.85714285714286%'>Usb-stick</a> <a href='/homeservermind/homeservermindblog/categories/windows-7' style='font-size: 160.0%'>Windows 7</a> </span>
+</section>
+
+<section>
+  <h1>Neueste Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Aktualisiere Status...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("homeservermind", 4, false);
+    });
+  </script>
+  <script src="/homeservermind/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/homeservermind" class="twitter-follow-button" data-show-count="false">Follow @homeservermind</a>
+  
+</section>
+
+<section>
+  <h1>Facebook? Nein danke!</h1>
+<a href="http://home-server-mind.com/facebook"><img alt="Not f'd — you won't find me on Facebook" style="border-width:0" title="Bildnachweis: http://www.fsf.org/facebook, Lizenz: CC BY-SA 3.0" width="445" height="148" src="http://home-server-mind.com/images/no-facebook-me.png" /></a>
+</section>
+<section>
+<h1>Verwandte Beiträge</h1>
+
+  <a href="/homeservermind/good-by-wordpress/">Umzug von Wordpress nach Octopress </a><br />
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p class="centert">&copy; 2012 - home-server-mind.com &#10072; <a href="/homeservermind/impressum"> Impressum</a>&nbsp;&#10072; <a href="/homeservermind/kontakt"> Kontakt</a><br><span class="credit">Proudly made WITHOUT Wordpress, MySQL, PHP &#8211; powered by <a href="http://octopress.org">Octopress</a> and <a href="http://jekyllrb.com/">Jekyll</a></span></p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'homeservermind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/';
+        var disqus_url = 'http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

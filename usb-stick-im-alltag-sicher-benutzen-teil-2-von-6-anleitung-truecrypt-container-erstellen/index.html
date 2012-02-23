@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>USB-Stick im Alltag sicher benutzen, (Teil 2 von 6) - home-server-mind.com</title>
+  <meta name="author" content="sailor79">
+
+  
+  <meta name="description" content="Anleitung USB-Stick teilweise verschlüsseln In diesem Teil möchte ich aufzeigen, wie einfach es ist, die Daten mit dem kostenlosen Tool  TrueCrypt zu &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen">
+  <link href="/homeservermind/favicon.png" rel="icon">
+  <link href="/homeservermind/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/homeservermind/stylesheets/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" /> 
+ <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var s = document.createElement('script');
+    var t = document.getElementsByTagName('script')[0];
+
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+
+    t.parentNode.insertBefore(s, t);
+ })();
+/* ]]> */
+</script>
+
+
+
+  <script src="/homeservermind/javascripts/modernizr-2.0.js"></script>
+  <script src="/homeservermind/javascripts/ender.js"></script>
+  <script src="/homeservermind/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/homeservermind/atom.xml" rel="alternate" title="home-server-mind.com" type="application/atom+xml">
+
+ 
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28877764-1']);
+    _gaq.push (['_gat._anonymizeIp']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <!-- Add fancyBox -->
+
+  <script type="text/javascript" src="/homeservermind/javascripts/jquery.fancybox.pack.js?v=2.0.4"></script>
+  <!-- Add fancyBox jQuery -->
+  <script type="text/javascript">
+    jQuery.noConflict();    // prevents conflicts with Ender.js, use jQuery instead of $
+    jQuery(document).ready(function() {
+        jQuery(".fancybox").fancybox();
+    });
+  </script>
+  <!-- End fancyBox insert -->
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/homeservermind/">home-server-mind.com</a></h1>
+  
+    <h2>gedanken.konzepte.projekte</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/homeservermind/atom.xml" rel="subscribe-rss" title="via RSS abonnieren">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:sailor79.github.com/homeservermind" />
+    <input class="search" type="text" name="q" results="0" placeholder="Suchen"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/homeservermind/">Startseite</a></li>
+  <li><a href="/homeservermind/blog/archives">Blog</a></li>
+</ul>
+
+
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">USB-Stick im Alltag sicher benutzen, (Teil 2 von 6)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-01-30T01:52:25+01:00" pubdate data-updated="true">30.01.2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Anleitung USB-Stick teilweise verschlüsseln</h2>
+
+<p>In diesem Teil möchte ich aufzeigen, wie einfach es ist, die Daten mit dem kostenlosen Tool <a href="http://www.truecrypt.org/docs/?s=truecrypt-portable"> TrueCrypt</a> zu verschlüsseln.</p>
+
+<blockquote><p>Allerdings habe ich die Anforderung, dass ich den Stick auf jedem beliebigen Windows-PC, also auch bei Freunden oder in der Firma, wenn erlaubt, einsetzen möchte, ohne eine Software installieren zu müssen.
+Dies ist realisierbar, indem wir den USB-Stick nicht komplett verschlüsseln, sondern nur einen Teilbereich.<!-- more --></p></blockquote>
+
+<h4>Vorbereitungen:</h4>
+
+<p>Konkret bedeutet dies, das wir einen sogenannten Container erstellen und auf dem für alle sichtbaren Bereich eine direkt ausführbare Version von  TrueCrypt hinterlegen, welche keine Installation erfordert. An dieser Stelle möchte ich darauf hinweisen, dass trotzdem Administrator-Rechte auf dem jeweiligen PC notwendig sind, um TrueCrypt erfolgreich und sicher ausführen zu können.</p>
+
+<p>Hierzu machen wir uns einfach die aktuelle portable Version (7.1 stable) von TrueCrypt zu nutze, welche man <a href="http://www.truecrypt.org/downloads">hier</a> laden kann. Um die Echtheit der Herkunft des Downloads zu prüfen, sei an dieser Stelle an folgenden <a href="http://www.truecrypt.org/docs/?s=digital-signatures">Link</a>  verwiesen.</p>
+
+<p>Der nun geladene Installer lässt sich lokal installieren oder als portable Version extrahieren:</p>
+
+<p>Zunächst starten wir die Datei <code>TrueCrypt Setup 7.1.exe</code> und bestätigen die Lizenzbedingungen. Im nächsten Schritt wählen wir <code>Extract</code> und klicken auf &#8216;Next&#8217;. Abschließend wählen wir den Ordner, in welchem die TrueCrypt-Dateien zunächst kopiert werden sollen.</p>
+
+<p><img src="../images/2012/01/tc1.png" alt="Lizenzbedingungen TrueCrypt" /><img src="../images/2012/01/tc2_extract.png" alt="TrueCrypt Option Extract" /><img src="../images/2012/01/tc2_folder1.png" alt="TrueCrypt Extract-Ordner wählen" /></p>
+
+<p><span class='pullquote-right' data-pullquote='Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.'>Nun widmen wir uns dem USB-Stick. Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.
+Wir erstellen auf dem USB-Stick nun einen neuen Ordner mit dem Namen <code>Secure</code>. In diesen Ordner kopieren wir die vorher nach <code>C:\Temp\TC_Files</code> bzw. in den von Ihnen angegebenen Ordner extrahieren Daten hinein und starten die Datei <code>TrueCrypt.exe</code>.</p>
+
+<p>Wer möchte kann sich <a href="http://www.truecrypt.org/download/thirdparty/localizations/langpack-de-1.0.0-for-truecrypt-7.1.zip">hier</a> die aktuelle deutsche Sprachdatei bzw. <a href="http://www.truecrypt.org/localizations">hier</a> seine bevorzugte Sprachdatei laden und ebenfalls in den Ordner <code>Secure</code> auf den USB-Stick kopieren. Die Standardeinstellung ist ansonsten Englisch.</span></p>
+
+<h4>TrueCrypt-Container erstellen:</h4>
+
+<ol>
+<li><p><em>Volumen erstellen</em> klicken<br/>
+<img src="../images/2012/01/1_start2.jpg" alt="TC Start" /></p></li>
+<li><ul>
+<li> <em>Eine verschlüsselte Containerdatei erstellen</em> wählen</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort11.jpg" alt="TC Speicherort 1 von 2" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Als Pfad auf den USB-Stick in den Ordner <code>Secure</code> gehen</li>
+<li> Dateinamen für Container-Datei eingeben, z.B. <code>Daten</code></li>
+<li> <em>Speichern</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort2.jpg" alt="Pfad im Ordner Secure und Dateinamen wählen" /></li>
+</ul>
+</li>
+<li><p><em>Weiter</em> klicken</p>
+
+<blockquote><p>Hinweis: Die Standardeinstellungen sind ausreichend. Mehr Informationen findet man <a href="http://www.truecrypt.org/docs/encryption-algorithms">hier</a> und <a href="http://www.truecrypt.org/docs/hash-algorithms">hier</a>.<br/>
+<img src="../images/2012/01/tc3_verschluesselung.jpg" alt="Verschlüsselung wählen" /></p></blockquote></li>
+<li><ul>
+<li> Die Größe des Containers als ganze Zahl eingeben. Der maximale Speicherplatz steht in         Fettschrift darunter. Ich würde mindestens 100 MB frei lassen.</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselunggroesse.jpg" alt="Volumen-Größe" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Nun muss eine Passphrase eingeben werden. Ein gutes Kennwort erstellt man am besten, indem man einen für sich einfach zu merkenden Satz wählt mit Groß- und Kleinschreibung, ein paar Zahlen und Sonderzeichen. Ich habe hier folgendes gewählt:
+
+<pre><code> MiteinemSatzkannmansichesgutmerken2012.
+</code></pre></li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselungpassword.jpg" alt="Volumen-Kennwort" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Anschließend wählt man das Datei-System der Container-Datei. Hier sollte <code>FAT</code> nur gewählt werden, wenn man weiß, dass man den Stick auf einem alten Rechner mit <code>Fat32</code> Dateisystem benutzt, ansonsten ist <code>NTFS</code> die richtige Wahl.</li>
+<li> Nun sollte man die Maus mindestens 30 Sekunden in dem aktiven Fenster hin und her bewegen. Dies trägt zu einer verbesserten Verschlüsselung vorbei.</li>
+<li> Danach auf <em>Formatieren</em> klicken. Die Dauer dieses Vorgangs ist abhängig von der gewählten Größe und kann zwischen wenigen Minuten und mehreren Stunden dauern. Hier ist also Geduld gefragt!<br/>
+<img src="../images/2012/01/tc3_verschluesselungsformat.jpg" alt="Verschlüsselungsformat" /></li>
+</ul>
+</li>
+<li><p>Wenn die Formatierung abgeschlossen ist, muss man die Erfolgsmeldung per Klick auf <em>OK</em> quittieren.<br/>
+<img src="../images/2012/01/tc3_verschluesselungzerfolgm.jpg" alt="Erfolgsmeldung" /></p></li>
+<li><p>Abschließend per Klick auf <em>Beenden</em> die Prozedur schließen.<br/>
+<img src="../images/2012/01/tc3_verschluesselungbeenden.jpg" alt="Beenden" /></p></li>
+</ol>
+
+
+<blockquote><p>Das wäre also geschafft. Jetzt schauen wir uns an, wie man den Container in der Praxis benutzt. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Weiterlesen&#8230;</a></p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">von <span class="fn">sailor79</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<time datetime="2012-01-30T01:52:25+01:00" pubdate data-updated="true">30.01.2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/homeservermind/blog/categories/backup/'>Backup</a>, <a class='category' href='/homeservermind/blog/categories/datenrestore/'>Datenrestore</a>, <a class='category' href='/homeservermind/blog/categories/festplatte/'>Festplatte</a>, <a class='category' href='/homeservermind/blog/categories/truecrypt/'>TrueCrypt</a>, <a class='category' href='/homeservermind/blog/categories/usb-stick/'>USB-Stick</a>, <a class='category' href='/homeservermind/blog/categories/windows-7/'>Windows 7</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/" data-via="homeservermind" data-counturl="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/homeservermind/usb-stick-sichern-teil-1-verschlusseln/" title="Vorheriger Beitrag USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)">&laquo; USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)</a>
+      
+      
+        <a class="basic-alignment right" href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/" title="Nächster Beitrag: USB-Stick im Alltag sicher benutzen, (Teil 3 von 6)">USB-Stick im Alltag sicher benutzen, (Teil 3 von 6) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Kommentare</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+<h1>About</h1>
+<img src="http://home-server-mind.com/images/avatar.png" height="70" width="65" alt="Avatar" title="sailor79" style="float:left;margin-right:12px; margin-bottom:10px;">Herzlich Willkommen!<br>Ich heiße <a href="http://github.com/sailor79">Marc</a> und schreibe hier über Abenteuer, die mir als Computer-Heimwerker alltäglich über den Weg laufen...<a href="http://flattr.com/thing/472503/sailor79" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" height="20" width="93" title="Flattr this" /></a></section>
+
+<section>
+  <h1>Themenübersicht</h1>
+    <span id="tag-cloud"><a href='/homeservermind/homeservermindblog/categories/allgemein' style='font-size: 117.14285714285714%'>Allgemein</a> <a href='/homeservermind/homeservermindblog/categories/apple' style='font-size: 117.14285714285714%'>Apple</a> <a href='/homeservermind/homeservermindblog/categories/backup' style='font-size: 160.0%'>Backup</a> <a href='/homeservermind/homeservermindblog/categories/batch-dateien' style='font-size: 108.57142857142857%'>Batch-dateien</a> <a href='/homeservermind/homeservermindblog/categories/bootcamp' style='font-size: 117.14285714285714%'>Bootcamp</a> <a href='/homeservermind/homeservermindblog/categories/bootcamp-x64' style='font-size: 117.14285714285714%'>Bootcamp x64</a> <a href='/homeservermind/homeservermindblog/categories/brother' style='font-size: 108.57142857142857%'>Brother</a> <a href='/homeservermind/homeservermindblog/categories/datenrestore' style='font-size: 151.42857142857144%'>Datenrestore</a> <a href='/homeservermind/homeservermindblog/categories/festplatte' style='font-size: 142.85714285714286%'>Festplatte</a> <a href='/homeservermind/homeservermindblog/categories/hardware' style='font-size: 117.14285714285714%'>Hardware</a> <a href='/homeservermind/homeservermindblog/categories/homeserver' style='font-size: 125.71428571428572%'>Homeserver</a> <a href='/homeservermind/homeservermindblog/categories/netzwerk' style='font-size: 108.57142857142857%'>Netzwerk</a> <a href='/homeservermind/homeservermindblog/categories/octopress' style='font-size: 117.14285714285714%'>Octopress</a> <a href='/homeservermind/homeservermindblog/categories/ss4200-ehw' style='font-size: 108.57142857142857%'>Ss4200-ehw</a> <a href='/homeservermind/homeservermindblog/categories/treiber' style='font-size: 108.57142857142857%'>Treiber</a> <a href='/homeservermind/homeservermindblog/categories/truecrypt' style='font-size: 134.28571428571428%'>Truecrypt</a> <a href='/homeservermind/homeservermindblog/categories/ubuntu-64bit' style='font-size: 108.57142857142857%'>Ubuntu 64bit</a> <a href='/homeservermind/homeservermindblog/categories/usb-stick' style='font-size: 142.85714285714286%'>Usb-stick</a> <a href='/homeservermind/homeservermindblog/categories/windows-7' style='font-size: 160.0%'>Windows 7</a> </span>
+</section>
+
+<section>
+  <h1>Neueste Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Aktualisiere Status...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("homeservermind", 4, false);
+    });
+  </script>
+  <script src="/homeservermind/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/homeservermind" class="twitter-follow-button" data-show-count="false">Follow @homeservermind</a>
+  
+</section>
+
+<section>
+  <h1>Facebook? Nein danke!</h1>
+<a href="http://home-server-mind.com/facebook"><img alt="Not f'd — you won't find me on Facebook" style="border-width:0" title="Bildnachweis: http://www.fsf.org/facebook, Lizenz: CC BY-SA 3.0" width="445" height="148" src="http://home-server-mind.com/images/no-facebook-me.png" /></a>
+</section>
+<section>
+<h1>Verwandte Beiträge</h1>
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">USB-Stick im Alltag sicher benutzen, (Teil 4 von 6)</a><br />
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">USB-Stick im Alltag sicher benutzen, (Teil 3 von 6)</a><br />
+
+  <a href="/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">USB-Stick im Alltag sicher benutzen (Exkurs)</a><br />
+
+  <a href="/homeservermind/usb-stick-sichern-teil-1-verschlusseln/">USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)</a><br />
+
+  <a href="/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten/">WHS nicht erreichbar, wie komme ich sofort an meine Daten?</a><br />
+
+  <a href="/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/">Website-Dateien automatisch per FTP auf den WHS sichern</a><br />
+
+  <a href="/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/">Bootcamp 3.1 lässt sich (auch) nicht mit Apple Software Update auf Windows 7 64bit installieren</a><br />
+
+  <a href="/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/">Bootcamp 3.0 lässt sich nicht von der MacOS X-DVD auf Windows 7-64bit installieren</a><br />
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p class="centert">&copy; 2012 - home-server-mind.com &#10072; <a href="/homeservermind/impressum"> Impressum</a>&nbsp;&#10072; <a href="/homeservermind/kontakt"> Kontakt</a><br><span class="credit">Proudly made WITHOUT Wordpress, MySQL, PHP &#8211; powered by <a href="http://octopress.org">Octopress</a> and <a href="http://jekyllrb.com/">Jekyll</a></span></p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'homeservermind';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/';
+        var disqus_url = 'http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

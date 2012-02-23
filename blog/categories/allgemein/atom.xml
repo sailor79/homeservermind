@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: Allgemein | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/allgemein/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Website-Dateien automatisch per FTP auf den WHS sichern]]></title>
+    <link href="http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/"/>
+    <updated>2012-01-08T20:16:32+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern</id>
+    <content type="html"><![CDATA[<p>Dieser Artikel beschreibt eine Möglichkeit, alle Dateien im Webspace (der auf der eigenen Domain gehosteten Wordpress-Website) mit Dateiattributen und Ordnerrechten automatisch zu sichern. Ziel ist es, täglich eine automatische Sicherung über FTP durchzuführen. Eine Beschreibung der Datenbanksicherung über phpmyadmin wird in diesem Artikel noch nicht betrachtet.<!-- more --></p>
+
+<h4>Hierzu habe ich folgende Anforderungen an das Backup für meine private Website:</h4>
+
+<blockquote><ul>
+<li>Kommandozeilenbasiert, so dass ein Shell-Script zeitgesteuert (automatisch) über den Windows-Taskplaner aufgerufen werden kann</li>
+<li>Ausführung über den Windows Home Server (WHS) möglich, da dieser durchgängig läuft</li>
+<li>Traffic schonend, d.h. inkrementielles Backup, so dass nur geänderte Dateien heruntergeladen werden</li>
+<li>sFTP wäre schön, ist für meine private Seite aber nicht zwingend erforderlich</li>
+<li>Ein Backup für die letzten sieben Tage (1/Tag) ist für mich ausreichend</li>
+</ul>
+</blockquote>
+
+<p>Nach längerer Recherche habe ich mich für das freie GNU-Projekt Wget entschieden, welches <a href="http://gnuwin32.sourceforge.net/packages/wget.htm">hier</a> als 32bit-Windows-Version erhältlich ist. Leider unterstützt Wget nicht sFTP, was in meinem Fall jedoch kein Problem darstellt. Weiterhin benötige ich zur zuverlässigen Ermittlung des Wochentags noch das Kommandozeilentool robocopy, welches in Windows Vista, Windows 7 und Windows Server 2008 standardmäßig integriert ist. Da der Windows Home Server (erste Version) auf Windows Server 2003-SP3 basiert, muss man hier noch die <a href="http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=17657">Microsoft Resource Kit Tools</a> auf dem WHS nachinstallieren.</p>
+
+<p>Nun ist alles vorbereitet, um das Backup in einem Batch-Script zu implementieren, so dass dieses später nur noch über den Taskplaner automatisch aufgerufen werden muss. Hierzu erstellt man sich zunächst auf dem WHS einen Ordner <code>Backup/websites/domain.tld</code>. Mit <code>domain.tld</code> ist der Name der zu sichernden Website gemeint, z.b. <code>home-server-mind.com</code>. In diesem Verzeichnis werden nun die Unterordner <code>Montag</code>, <code>Dienstag</code>,...,<code>Sonntag</code> erstellt.</p>
+
+<p>Im Ordner <code>Backup/websites/domain.tld</code> erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>week_rotation.bat</code>.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[week_rotation.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">::-- FTP-Backup mit wget und robocopy als 7-Tage-Woche-Rotation</span>
+</span><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">on</span> &amp;amp; <span class="k">setlocal</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::--mittels wget und ftp-logindaten Daten ins aktuelle Verzeichnis dieser</span>
+</span><span class='line'><span class="c">::  batch-Datei holen (spiegeln inkl. Dateiatrribute, Ordnerrechte etc.)</span>
+</span><span class='line'>wget -m -o backup.log ftp:<span class="n">//user:password@domain.tld/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::--- Wochentag ermitteln für Ordnernamen, danke an User Biber von administrator.de</span>
+</span><span class='line'><span class="k">for</span> <span class="n">/f</span> <span class="s2">&quot;tokens=3&quot;</span> <span class="nv">%%i</span> in (<span class="s1">&#39;robocopy /?&lt;sup&gt;|find&lt;/sup&gt; &quot;Started&quot;&#39;</span>) <span class="k">do</span> (
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Mon&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Montag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Tue&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Dienstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Wed&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Mittwoch&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Thu&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Donnerstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Fri&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Freitag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sat&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Samstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sun&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Sonntag&quot;</span>
+</span><span class='line'>   )&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="c">::-- Daten in aktuellen Wochentag-Unterordner inkl. aller Dateiattribute/Rechte verschieben</span>
+</span><span class='line'>robocopy D:\Backup\websites\domain.tld\new D:\Backup\websites\domain.tld\<span class="nv">%wochentag%</span> <span class="n">/MIR</span>
+</span><span class='line'>RMDIR D:\Backup\websites\domain.tld\new
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Im Code muss nun in Zeile 5 der Ausdruck <code>user:password</code> durch die persönlichen FTP-Login-Daten ersetzt werden sowie in den Zeilen 5, 20 und 21 der Ausdruck <code>domain.tld</code> durch den Namen der eigenen Website (ohne <code>http://www</code>).</p>
+
+<p>Zu guter letzt muss die Datei <code>week_rotation.bat</code> in den Taskplaner eingebunden werden. Dazu verbindet man sich zunächst mit dem WHS per Remotedesktopverbindung (nicht über die Windows Home Server-Konsole) und öffnet über START > SYSTEMSTEUERUNG > GEPLANTE TASKS den <em>Geplanten Task hinzufügen</em>-Dialog. Hier nimmt man gemäß nachfolgender Bilder in den ersten drei Reitern die abgebildeten Einstellungen vor:</p>
+
+<p>Unter <em>TASK > AUSFÜHREN</em> wählt man die soeben erstellte Datei <code>week_rotation.bat</code>, unter <em>TASK > AUSFÜHREN IN</em> wählt man den gleichen Ordner und unter <em>TASK > AUSFÜHREN ALS</em> sollte ein lokaler Administrator gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r1.jpg" alt="Reiter Task" /></p>
+
+<p>Im Reiter <em>Zeitplan</em> habe ich die tägliche Ausführung um 00:10 Uhr gewählt, da mein Internet-Provider ggf. um 00:00 Uhr täglich eine kurze Zwangstrennung durchführt. Die Uhrzeit sollte also sinnvoll gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r2.jpg" alt="Reiter Zeitplan" /></p>
+
+<p>Im Reiter <em>Einstellungen</em> lasse ich den Task nach sechs Stunden beenden, falls er sich aufgehangen hat und setze mindestens ein Häckchen bei Computer zum Ausführen reaktivieren:</p>
+
+<p><img src="../images/2012/01/task_r3.jpg" alt="Reiter Einstellungen" /></p>
+
+<blockquote><p>Das war es schon. Zum Testen die Datei <code>week_rotation.bat</code> manuell starten und überprüfen, ob es funktionert. Ggf. sollte man noch seine Firewall-Einstellungen betreffend Wget und den Ports 20 und 21 überprüfen.</p></blockquote>
+
+<hr />
+
+<p><em>Weiterführende Literatur:</em>
+Wget <a href="http://wget.addictivecode.org/FrequentlyAskedQuestions">FAQ</a>, <a href="http://www.gnu.org/software/wget/manual/html_node/index.html">Manual</a> | Robocopy <a href="http://de.wikibooks.org/wiki/Datensicherung/_Werkzeuge/_Kopieren/_ROBOCOPY">Allgemein</a>, <a href="http://technet.microsoft.com/de-de/library/cc733145%28WS.10%29.aspx">FAQ</a> | Batch-Programmierung <a href="http://www.admini.de/batch-infos.htm">Allgemein</a>, <a href="http://de.wikibooks.org/wiki/Batch-Programmierung">Beispiele</a> | Cron-Jobs unter Windows <a href="http://www.msxfaq.de/howto/mstask.htm">Allgemein</a> | Misc <a href="http://en.wikipedia.org/wiki/Backup_rotation_scheme">Backup-Rotations-Schemata</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Willkommen]]></title>
+    <link href="http://sailor79.github.com/homeservermind/willkommen/"/>
+    <updated>2010-10-07T11:29:54+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/willkommen</id>
+    <content type="html"><![CDATA[<p><strong>Hallo Leser!</strong></p>
+
+<p>Man muss die Welt nicht immer neu erfinden, schöner ist, wenn man relevante Informationen einfach teilen kann. Da ich selber reger Nutzer diverser Foren und Technik-Blogs bin, möchte ich versuchen, mit dieser Seite ein Stück Erfahrungen zurückzugeben und relevante Informationen projektbezogen so zusammenzutragen, daß ein Mehrwert entsteht.<!-- more --></p>
+
+<p>Hier findet Ihr zukünftig Informationen zu den Themen Homesever, Technik, Multimedia und viele andere Themen, über die ich so stolpere. Ob Vernetzung zuhause oder integrierte mobile Anwendungen, ob Wordpress und CSS, hier sollen Gedanken zu verschiedenen Aspekten sowie anstehende Projekten und deren Realisationsverlauf abgebildet werden.</p>
+
+<p>Ich freue mich auf einen regen Gedankenaustausch :-)</p>
+
+<p>Viele Grüße
+<em>Marc</em></p>
+]]></content>
+  </entry>
+  
+</feed>

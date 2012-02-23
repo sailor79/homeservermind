@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Kategorie: Brother | home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/blog/categories/brother/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/"/>
+    <updated>2012-02-15T19:39:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren</id>
+    <content type="html"><![CDATA[<p>Diese Installationsanleitung ist vorwiegend für Linux-Neulinge wie mich geschrieben. <!-- more -->Die Beschreibungen in den folgende Quellen sind zwar sehr gut, decken jedoch viele andere Konfigurationen mit einigen Querverweisen ab, was für den Neuling manchmal etwas verwirrend sein kann. Daher diese Schritt-für-Schritt-Anleitung, die für alle Brother-Drucker im Netzwerkbetrieb auf Ubuntu 11.10 64bit-Systemen am Beispiel des Multifunktionsdruckers MFC-5490CN gilt. Haben Sie einen anderen Brother-Drucker, müssen Sie nur die unten beschriebenen Installations-Dateien von Brother selbst ändern, der Rest kann so bleiben.</p>
+
+<h3>Druckertreiber</h3>
+
+<h3>Scannertreiber</h3>
+
+<h4>Schritt 1: Vorbereitung</h4>
+
+<p><span class='pullquote-right' data-pullquote='starten das Terminal mit der Tastenkombination STRG+ALT+t'>Vorbereitend muss man zunächst ein paar Pakete installieren. Wir starten das Terminal mit der Tastenkombination STRG+ALT+t und kopieren die im nachfolgenden Codefenster dargestelle Zeile hinein. Anschließend werden Sie im Terminal durch das Präfix <code>sudo</code> aufgefordert, Ihr Benutzer-Kennwort bzw. Root-Kennwort einzugeben.</span></p>
+
+<p><em>Hinweis für Linux-Neulinge: STRG-V zum Einfügen funktioniert im Terminal nicht, da diese Tasten-Kombination dem Abbruch der aktuellen Aktion vorbehalten ist (wie auch in MS DOS). Stattdessen im Terminal STRG+ALT+V benutzen (oder rechte Maustaste klicken und dann einfügen wählen).</em>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;sudo apt-get install xsane xsane-common sane-utils lib32stdc++ csh
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Anschließend lädt man bei Brother die Treiber. In unserem Fall benötigen wir folgendes Paket: <a href="http://www.brother.com/cgi-bin/agreement/agreement.cgi?dlfile=http://www.brother.com/pub/bsc/linux/dlf/brscan3-0.2.11-4.amd64.deb&amp;lang=English_gpl">brscan3 64bit</a> Wenn Sie ein anderes Modell haben, finden sie <a href="http://welcome.solutions.brother.com/bsc/public_s/id/linux/en/download_scn.html">hier</a> den Richtigen.</p>
+
+<h4>Schritt 2: Scanner-Installation</h4>
+
+<p>Normalerweise wird die runtergeladene Datei im Ordner <code>/home/user/Downloads</code> abgelegt. Standardmäßig startet das Terminal jedoch im Persönlichen Ordner <code>/home/user/</code> so dass wir nur zum Ordner <code>Downloads</code> wechseln müssen.
+Wir gehen im Terminal zu diesem Verzeichnis und installieren das eben geladene Paket:</p>
+
+<p><em>Hinweis: <strong>user</strong> ist Ihr Benutzername, bei mir z.B. <strong>sailor79</strong>.</em></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span>
+</span><span class='line'><span class="nb">cd </span>Downloads
+</span><span class='line'>sudo dpkg  -i  --force-all  brscan3*.deb
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Nun müssen wir alle Dateien aus /usr/lib64/sane nach /usr/lib/sane und alle Dateien aus /usr/lib64 nach /usr/lib zu kopieren:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo cp /usr/lib64/&lt;em&gt;.&lt;/em&gt; /usr/lib/
+</span><span class='line'>sudo cp /usr/lib64/sane/&lt;em&gt;.&lt;/em&gt; /usr/lib/sane<span class="sb">`</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>Schritt 3: Scannerkonfiguration</h4>
+
+<p>Zur weiteren Konfiguration brauchen wir die IP-Adresse, um den Hostnamen des Druckers bzw. Scanners aufzulösen:
+Dazu installieren wir zunächst noch zwei Pakete (falls nicht schon vorhanden) mit:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo apt-get install nmap tracepath
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Danach suchen wir mit nmap die IP-Adresse des Druckers. Bei mir fängt das Netz mit <code>192.168.1.x</code> an, wenn Sie z.B. <code>192.168.0.x</code> haben, dann ändern Sie den folgenden Befehl dementsprechend ab und geben im Terminal ein:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal ggf. die 1 anpassen!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nmap 192.168.1.*
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Daraufhin werden alle gefunden IP-Adressen in dem Adressblock angezeigt. Wir suchen nachdem, wo der Service <code>printer</code> drin vorkommt.
+Bei mir ist der folgende Teil einer längeren Ausgabe im Terminal der Richtige:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Nmap scan report <span class="k">for </span>192.168.1.102
+</span><span class='line'>Host is up <span class="o">(</span>0.016s latency<span class="o">)</span>.
+</span><span class='line'>Not shown: 995 closed ports
+</span><span class='line'>PORT     STATE SERVICE
+</span><span class='line'>21/tcp   open  ftp
+</span><span class='line'>23/tcp   open  telnet
+</span><span class='line'>80/tcp   open  http
+</span><span class='line'>515/tcp  open  printer
+</span><span class='line'>9100/tcp open  jetdirect
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Nun kennen wir also die aktuelle IP-Adresse des Druckers/Scanners. In meinem Fall lautet sie <code>192.168.1.102</code>. Bei Ihnen wird sie garantiert anders sein und ist im folgenden anzupassen.
+Da die IP-Adresse bei vielen aber nicht statisch, also fest vergeben ist, arbeiten wir lieber mit dem einzigartigen Hostnamen des Druckers/Scanners weiter. Den bekommen wir so raus:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Eingabe im Terminal bei Anpassung der IP-Adresse!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>tracepath 192.168.1.102
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+In der darauf folgenden Ausgabe können wir den Hostnamen ablesen:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sailor79@ubuntu:~<span class="nv">$ </span>tracepath 192.168.1.102
+</span><span class='line'> 1:  ubuntu.local                                          0.062ms pmtu 1500
+</span><span class='line'> 1:  BRN001BA91A1762.local                                 0.781ms reached
+</span><span class='line'> 1:  BRN001BA91A1762.local                                 0.788ms reached&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt; Resume: pmtu 1500 hops 1 back 255
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;sailor79@ubuntu:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+Der Hostname in meinem Fall lautet also: <code>BRN001BA91A1762.local</code></p>
+
+<p>Nun brauchen wir noch aus der Treiber-Liste die exakte Schreibweise unseres Druckers/Scanner:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brsaneconfig3 -q
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+In einer langen Liste finde ich schließlich die Schreibweise <code>MFC-5490CN</code>.</p>
+
+<p>Nun können wir endlich den Scanner einrichten mit dem noch anzupassenden Befehl
+<code>brsaneconfig3 -a name=FRIENDLY-NAME model=MODEL-NAME nodename=HOSTNAME</code>
+einrichten.</p>
+
+<p>In unserem Beispiel (Sie müssen Ihre eigenen Namen wie vorher rausgefunden nehmen) ist:</p>
+
+<ul>
+<li>FRIENDLY-NAME: frei wählbar, ich nehme <code>Brother Scanner</code></li>
+<li>MODEL-NAME: <code>MFC-5490CN</code></li>
+<li>HOSTNAME: <code>BRN001BA91A1762.local</code></li>
+</ul>
+
+
+<p>Also gebe ich im Terminal ein:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal mit Änderung zu Ihrer IP-Adresse und Ihrem Hostnamen!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brsaneconfig3 -a <span class="nv">name</span><span class="o">=</span>Brother Scanner <span class="nv">model</span><span class="o">=</span>MFC-5490CN <span class="nv">nodename</span><span class="o">=</span>BRN001BA91A1762.local
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+Zur Sicherheit starte ich im Terminal den Scanner-Service neu:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo service udev restart
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+Danach können Sie den PC einmal neustarten und mit
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>xsane
+</span></code></pre></td></tr></table></div></figure></notextile></div> testen, ob der Scanner funktioniert.</p>
+
+<h4>Schritt 4: Zum Schluss installieren wir noch die Scannertaste, um Scans nicht nur vom PC, sondern direkt vom Drucker bzw. Scanner an den PC schicken zu können:</h4>
+
+<p>Dazu laden wir zunächst <a href="http://www.brother.com/cgi-bin/agreement/agreement.cgi?dlfile=http://www.brother.com/pub/bsc/linux/dlf/brscan-skey-0.2.1-3.amd64.deb&amp;lang=English_lpr">scan-key-tool 64bit</a> in das Verzeichnis <code>Downloads</code> herunter.</p>
+
+<p>Anschließend installieren wir dieses Paket:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN-Taste abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span>
+</span><span class='line'><span class="nb">cd </span>Downloads
+</span><span class='line'>dpkg  -i  --force-all  &lt;em&gt;skey&lt;/em&gt;.deb
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Um zu Testen, ob Scanner-Treiber und das Tool für die Scantaste installiert sind, geben wir
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>dpkg  -l  |  grep  Brother
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+in das Terminal ein. Darauf hin sollte folgende Ausgabe erscheinen:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Ausgabe:
+</span><span class='line'>sailor79@ubuntu:~<span class="nv">$ </span>dpkg  -l  |  grep  Brother
+</span><span class='line'>ii  brscan-skey                                                 0.2.1-3                                  Brother Linux scanner S-KEY tool
+</span><span class='line'>ii  brscan3                                                     0.2.11-4                                 Brother Scanner Driver
+</span><span class='line'>ii  mfc5490cncupswrapper:i386                                   1.1.2-2                                  Brother CUPS Inkjet Printer Definitions
+</span><span class='line'>ii  mfc5490cnlpr:i386                                           1.1.2-2                                  Brother lpr Inkjet Printer Definitions
+</span><span class='line'>ii  ptouch-driver                                               1.3-0ubuntu11                            CUPS/Foomatic driver <span class="k">for </span>Brother P-touch label printers
+</span><span class='line'>sailor79@ubuntu:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+Wir finden <em>brscan-skey</em> und <em>brscan3</em>, also alles soweit in Ordnung.
+Nun starten wir das Scantasten-Tool mit:
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brscan-skey
+</span></code></pre></td></tr></table></div></figure></notextile></div> und können am Scanner mit der Scantaste benutzen. Als Ziel erscheint am Drucker selbst nicht wie bei MS Windows Ihr Computername sondern Ihr Ubuntu-Benutzername.</p>
+
+<blockquote><p>Das war es. Wenn Sie Fragen oder Anregungen haben, können Sie gerne einen Kommentar hinterlassen. Natürlich auch, wenn Ihnen der Artikel geholfen hat.</p></blockquote>
+
+<p>Quellennachweis:
+<a href="http://wiki.ubuntuusers.de/Brother/Scanner">wiki.ubuntuusers</a> | <a href="http://welcome.solutions.brother.com/bsc/public_s/id/linux/en/index.html">Brother</a>      <br/>
+Weiterführende Literatur:
+<a href="http://wiki.ubuntuusers.de/Brother/Scanner#Scankey-Tool-Optimierung">Scan(-tasten) einstellen</a></p>
+]]></content>
+  </entry>
+  
+</feed>

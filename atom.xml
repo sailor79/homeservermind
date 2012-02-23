@@ -1,0 +1,1109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[home-server-mind.com]]></title>
+  <link href="http://sailor79.github.com/homeservermind/atom.xml" rel="self"/>
+  <link href="http://sailor79.github.com/homeservermind/"/>
+  <updated>2012-02-23T18:02:45+01:00</updated>
+  <id>http://sailor79.github.com/homeservermind/</id>
+  <author>
+    <name><![CDATA[sailor79]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Individuelle Fehlerseiten in Octopress einbinden]]></title>
+    <link href="http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden/"/>
+    <updated>2012-02-22T22:27:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/fehlerseiten-in-octopress-einbinden</id>
+    <content type="html"><![CDATA[<h2>Bei bestimmten HTTP-Statuscodes auf eigene Fehlerseiten umleiten</h2>
+
+<p>Wer seinen Octopress-Blog auch per <a href="http://wiki.ubuntuusers.de/rsync">rsync</a> auf seinem <a href="http://httpd.apache.org/">Apache-Webserver</a> veröffentlicht, hat es sehr einfach, eigene Fehlerseiten mittels <code>.htaccess</code> zu implementieren und die Standardfehlerseiten des Servers umzuleiten.<!-- more --></p>
+
+<p>Meine Anforderungen an Fehlerseiten:</p>
+
+<ul>
+<li>Fehlerseiten sollen im Artikelbereich landen (gleiches Layout)</li>
+<li>Fehlerseiten sollen die Möglichkeit bieten, andere Posts zu wählen (Archiv anzeigen)</li>
+</ul>
+
+
+<h3>Was sind Fehlerseiten?</h3>
+
+<blockquote><p><cite>Eine Fehlerseite ist eine Webseite, die angezeigt wird, wenn man beispielsweise auf einen Toten Link im Internet klickt bzw. eine nicht existente URL aufruft. Die meisten Browser zeigen dabei die vom Webserver gelieferte Standard-Seite [&#8230;]</cite> Quelle: <a href="http://de.wikipedia.org/wiki/Fehlerseite">wiki</a></p></blockquote>
+
+<h3>Welche Fehler bzw. http-Statuscodes für Fehler gibt es?</h3>
+
+<p>Hier können Sie sich allgemein über <a href="http://de.selfhtml.org/servercgi/server/httpstatuscodes.htm">http-Statuscodes</a> informieren.<br/>
+Ich möchte in meinem Blog nur Fehlerseiten für die häufigsten Statusfehlercodes einbinden:</p>
+
+<ol>
+<li>401: Unauthorized</li>
+<li>403: Forbidden</li>
+<li>404: Not Found (wichtig!, z.B. bei Tippfehlern, verwaisten Seiten)</li>
+<li>500: Internal Server Error</li>
+</ol>
+
+
+<h3>Vorbereitung</h3>
+
+<p>Zunächst stellen wir in unserem Octopress-Verzeichnis im Unterverzeichnis <code>source</code> einen neuen Ordner <code>error</code>.</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir octopress/source/error
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Auf Github bin ich über folgendes <a href="https://github.com/robertkowalski/octopress/commit/31a3fb0b393450d17ec6c82ba724dc9d202edc82#diff-0">Fehlerseiten-Markdown</a> gestoßen und habe es jeweils an meine Bedürfnisse angepasst.<br/>
+Damit erstellen wir für jeden Fehler eine Fehlerseite und speichern sie im Ordner <code>octopress/source/error</code> unter den Namen <code>401.html</code>, <code>403.html</code>,<code>404.html</code> und <code>500.html</code> ab:</p>
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 404]  (401.html)</span> <a href='http://sailor79.github.com/homeservermind/downloads/code/401.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 401 Unauthorized.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 403]  (403.html)</span> <a href='http://sailor79.github.com/homeservermind/downloads/code/403.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, HTTP-Fehler 403 Forbidden (Verboten).
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 404]  (404.html)</span> <a href='http://sailor79.github.com/homeservermind/downloads/code/404.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Fehler 404, Entschuldigung. Die angeforderte Seite wurde nicht gefunden.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span>[Fehlerseite Error 500]  (500.html)</span> <a href='http://sailor79.github.com/homeservermind/downloads/code/500.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>---
+</span><span class='line'>layout: page
+</span><span class='line'>title: Entschuldigung, Fehler 500 auf sicheren Seiten.
+</span><span class='line'>footer: false
+</span><span class='line'>---
+</span><span class='line'><span class="nt">&lt;p&gt;&lt;b&gt;</span>Vielleicht finden Sie das Passende im Blog-Archiv:<span class="nt">&lt;/b&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;blog-archives&quot;</span> <span class="na">class=</span><span class="s">&quot;missing&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>{% for post in site.posts limit: 10 %}
+</span><span class='line'><span class="nt">&lt;article&gt;</span>
+</span><span class='line'>  {% include archive_post.html %}
+</span><span class='line'><span class="nt">&lt;/article&gt;</span>
+</span><span class='line'>{% endfor %}
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nun fügen wir im Verzeichnis <code>../octopress/source</code> die Datei <code>.htaccess</code> hinzu. In dieser leiten wir möglicher Fehler auf unsere neuen Seiten um:</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] (.htaccess)  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ErrorDocument 401 /error/401.html 
+</span><span class='line'>ErrorDocument 403 /error/403.html 
+</span><span class='line'>ErrorDocument 404 /error/404.html 
+</span><span class='line'>ErrorDocument 500 /error/500.html</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wichtig ist, dass die Dateiberechtigung für die Datei <code>.htaccess</code> 644 (Schreibrechte für den Benutzer, Leserechte für alle) lautet. Dies kann man entweder im Terminal machen indem man im Verzeichnis <code>octopress/source</code> folgenden Befehl eingibt:</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten] </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chmod 644 .htaccess</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bequemer ist natürlich ein FTP-Client wie <a href="http://filezilla-project.org/">File-Zilla</a>.</p>
+
+<p>Fertig. <a href="http://home-server-mind.com/tippfehlerseitenichtvorhanden">DEMO anschauen?</a></p>
+
+<p>Bei Fragen, Anregungen, Probleme einfach einen Kommentar schreiben.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Umzug von Wordpress nach Octopress ]]></title>
+    <link href="http://sailor79.github.com/homeservermind/good-by-wordpress/"/>
+    <updated>2012-02-19T19:04:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/good-by-wordpress</id>
+    <content type="html"><![CDATA[<p>Endlich ist es vollzogen, die Migration dieser Website von <a href="http://de.wordpress.org/">Wordpress</a> nach <a href="https://github.com/imathis/octopress">Octopress</a>, einem <a href="http://jekyllrb.com/">Jekyll</a>-Framework.<!-- more -->
+<img src="../images/2012/02/octo.jpg" height="151" width="816" alt="logo" title="Bilderquelle: wordpress.org, octopress.org, jekyllrb.com"></p>
+
+<h4>Warum?</h4>
+
+<ol>
+<li>An Wordpress mit SQL-Datenbank und PHP hat mich schon immer gestört, dass ich für einen kleinen Blog mit Kanonen auf Spatzen schieße. Man kauft sich ja auch keinen Lieferwagen, um ein Kasten Bier transportieren zu können.</li>
+<li>Der Octopress- bzw. Jekyll-Output ist statisch, d.h. die Ladezeiten verringern sich um ein Vielfaches.</li>
+<li>Statische Seiten sind sicher, ich muss mich nicht mehr ständig um Sicherheitspatches kümmern.
+Octopress Untertitel &#8220;A Blogging framework for hackers&#8221; meint nicht den Blogger, sondern den <em>Hacker</em>, der nun keine Möglichkeit mehr hat, den Server zu kapern. Im Zweifel schicke ich per rsync die Dateien neu, und das Thema hat sich erledigt.</li>
+<li>Deutlich weniger Spam über CSS-Hacks.</li>
+<li>Einfache Veröffentlichung mittels <a href="http://rake.rubyforge.org/">rake</a>-task über <a href="http://wiki.ubuntuusers.de/rsync">rsync</a>.</li>
+<li>Keep it simple! Datensparsamkeit und Datenvermeidung.</li>
+<li>Unkompliziertes Schreiben mittels Markdown und <a href="http://bradchoate.com/mt/docs/mtmanual_textile2.html">Textile</a> als Auszeichnungsprache.</li>
+<li>Versionskontrolle über github.</li>
+<li>Guter Syntax-Highlighter für Technik-Blogs.</li>
+</ol>
+
+
+<h4>Was ist Jekyll?</h4>
+
+<blockquote><p>Jekyll ist <cite>ein Postgenerator und kein Blogging-Framework, der direkte Vergleich mit Wordpress wäre also eher unfair. Jekyll will kein CMS mit komplettem Admin Control Panel und anderweitigen Komfortfunktionen sein, denn es ist ein schlankes Kommandozeilen-Tool, das aus den vorliegenden Artikel- und Layout-Dateien statische HTML-Webseiten generiert. Das mag nun Einsteiger wahrscheinlich abschrecken, für mich ist es aber genau richtig. Da Jekyll nur normale HTML-Dateien erzeugt, läuft es beinahe auf jedem beliebigen Webserver und benötigt auch keine Datenbank [&#8230;]</cite> Quelle: <a href="http://ganz-sicher.net/blog/blognews/Umstieg-von-Wordpress-nach-Jekyll/">Ganz-Sicher.Net Blog</a></p></blockquote>
+
+<h4>ToDo</h4>
+
+<h5>Folgende Themen habe ich noch nicht (vollständig) umgesetzt:</h5>
+
+<ul>
+<li><s>Kontaktformular (Da beisst sich die Katze in den Schwanz.)</s></li>
+<li>Ordentliche Suchfunktion, evtl. mittels bestfrom/anchorman oder indextank</li>
+<li>Implementierung 2-Klick-System <a href="http://www.heise.de/extras/socialshareprivacy/">(c&#8217;t)</a> für Socialbuttons</li>
+<li><s>Fancybox-Implementierung</s></li>
+<li>Latex-Einbindung mittels <a href="http://www.mathjax.org/docs/1.1/tex.html">MathJax</a></li>
+<li>Echte <a href="https://github.com/blackwinter/jekyll-localization">Lokalisation</a></li>
+<li><s>Javascript/CSS mit gzip komprimieren (.htaccess?)</s></li>
+<li><s>TagCloud</s></li>
+<li>Github-Versionskontrolle (leider bisher vernachlässigt&#8230;)</li>
+<li><a href="https://github.com/LawrenceWoodman/related_posts-jekyll_plugin"><s>Related Posts</s> </a></li>
+<li>CSS-Problem mit Menüleiste in IE/ Mozilla</li>
+<li>print.css für Artikeldruck erstellen</li>
+</ul>
+
+
+<h4>Nachteile</h4>
+
+<ul>
+<li>Anfänglich ist viel Handarbeit nötig, grundsätzliche Programmier- und Linuxkenntnisse sollten vorhanden sein.</li>
+<li>Kommentare sind dynamisch, daher muss ein externer Dienst (z.B. <a href="http://disqus.com/">disqus</a>) eingebunden werden. Hieraus ergeben sich datenschutzrechtliche Bedenken und eine Ladezeitverlängerung (ca. 500ms).</li>
+</ul>
+
+
+<h4>Interessante Links</h4>
+
+<p><a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> | <a href="http://nerdlabor.de/blog/2012/02/15/kollaboratives-arbeiten-mit-octopress-und-github-pages/">Github/ Octopress-Einstieg</a> | <a href="http://progit.org/book/ch3-2.html">Git-Versionskontrolle</a> | <a href="http://ethanschoonover.com/solarized">Solarized-Syntax-Highlighting</a> | <a href="http://www.forceappx.com/blog/2011/12/28/getting-fancybox-to-play-nice-with-octopress/">Fancybox-Implementierung</a> | <a href="https://github.com/thomasf/exitwp">Wordpress-Artikel-Export</a></p>
+
+<h4>Eure Meinung ist mir wichtig!</h4>
+
+<blockquote><p>Wie gefällt Euch die bisherige Umsetzung? Was sollte geändert werden? Ich freue mich auf alle Meinungen und Anregungen&#8230;</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Multifunktionsdrucker Brother MFC-5490CN im Netzwerk auf Ubuntu 11.10 64bit installieren (Teil 2/3 Scanner)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren/"/>
+    <updated>2012-02-15T19:39:00+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/brother-mfc-5490cn-drucker-und-scanner-auf-ubuntu-11-dot-10-64bit-installieren</id>
+    <content type="html"><![CDATA[<p>Diese Installationsanleitung ist vorwiegend für Linux-Neulinge wie mich geschrieben. <!-- more -->Die Beschreibungen in den folgende Quellen sind zwar sehr gut, decken jedoch viele andere Konfigurationen mit einigen Querverweisen ab, was für den Neuling manchmal etwas verwirrend sein kann. Daher diese Schritt-für-Schritt-Anleitung, die für alle Brother-Drucker im Netzwerkbetrieb auf Ubuntu 11.10 64bit-Systemen am Beispiel des Multifunktionsdruckers MFC-5490CN gilt. Haben Sie einen anderen Brother-Drucker, müssen Sie nur die unten beschriebenen Installations-Dateien von Brother selbst ändern, der Rest kann so bleiben.</p>
+
+<h3>Druckertreiber</h3>
+
+<h3>Scannertreiber</h3>
+
+<h4>Schritt 1: Vorbereitung</h4>
+
+<p><span class='pullquote-right' data-pullquote='starten das Terminal mit der Tastenkombination STRG+ALT+t'>Vorbereitend muss man zunächst ein paar Pakete installieren. Wir starten das Terminal mit der Tastenkombination STRG+ALT+t und kopieren die im nachfolgenden Codefenster dargestelle Zeile hinein. Anschließend werden Sie im Terminal durch das Präfix <code>sudo</code> aufgefordert, Ihr Benutzer-Kennwort bzw. Root-Kennwort einzugeben.</span></p>
+
+<p><em>Hinweis für Linux-Neulinge: STRG-V zum Einfügen funktioniert im Terminal nicht, da diese Tasten-Kombination dem Abbruch der aktuellen Aktion vorbehalten ist (wie auch in MS DOS). Stattdessen im Terminal STRG+ALT+V benutzen (oder rechte Maustaste klicken und dann einfügen wählen).</em></p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>   sudo apt-get install xsane xsane-common sane-utils lib32stdc++ csh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Anschließend lädt man bei Brother die Treiber. In unserem Fall benötigen wir folgendes Paket: <a href="http://www.brother.com/cgi-bin/agreement/agreement.cgi?dlfile=http://www.brother.com/pub/bsc/linux/dlf/brscan3-0.2.11-4.amd64.deb&amp;lang=English_gpl">brscan3 64bit</a> Wenn Sie ein anderes Modell haben, finden sie <a href="http://welcome.solutions.brother.com/bsc/public_s/id/linux/en/download_scn.html">hier</a> den Richtigen.</p>
+
+<h4>Schritt 2: Scanner-Installation</h4>
+
+<p>Normalerweise wird die runtergeladene Datei im Ordner <code>/home/user/Downloads</code> abgelegt. Standardmäßig startet das Terminal jedoch im Persönlichen Ordner <code>/home/user/</code> so dass wir nur zum Ordner <code>Downloads</code> wechseln müssen.
+Wir gehen im Terminal zu diesem Verzeichnis und installieren das eben geladene Paket:</p>
+
+<p><em>Hinweis: <strong>user</strong> ist Ihr Benutzername, bei mir z.B. <strong>sailor79</strong>.</em></p>
+
+<figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span>
+</span><span class='line'><span class="nb">cd </span>Downloads
+</span><span class='line'>sudo dpkg  -i  --force-all  brscan3*.deb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nun müssen wir alle Dateien aus /usr/lib64/sane nach /usr/lib/sane und alle Dateien aus /usr/lib64 nach /usr/lib zu kopieren:</p>
+
+<figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo cp /usr/lib64/*.* /usr/lib/
+</span><span class='line'>sudo cp /usr/lib64/sane/*.* /usr/lib/sane<span class="sb">`</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Schritt 3: Scannerkonfiguration</h4>
+
+<p>Zur weiteren Konfiguration brauchen wir die IP-Adresse, um den Hostnamen des Druckers bzw. Scanners aufzulösen:
+Dazu installieren wir zunächst noch zwei Pakete (falls nicht schon vorhanden) mit:</p>
+
+<figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo apt-get install nmap tracepath
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Danach suchen wir mit nmap die IP-Adresse des Druckers. Bei mir fängt das Netz mit <code>192.168.1.x</code> an, wenn Sie z.B. <code>192.168.0.x</code> haben, dann ändern Sie den folgenden Befehl dementsprechend ab und geben im Terminal ein:</p>
+
+<figure class='code'><figcaption><span>[im Terminal ggf. die 1 anpassen!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nmap 192.168.1.*
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Daraufhin werden alle gefunden IP-Adressen in dem Adressblock angezeigt. Wir suchen nachdem, wo der Service <code>printer</code> drin vorkommt.
+Bei mir ist der folgende Teil einer längeren Ausgabe im Terminal der Richtige:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Nmap scan report <span class="k">for </span>192.168.1.102
+</span><span class='line'>Host is up <span class="o">(</span>0.016s latency<span class="o">)</span>.
+</span><span class='line'>Not shown: 995 closed ports
+</span><span class='line'>PORT     STATE SERVICE
+</span><span class='line'>21/tcp   open  ftp
+</span><span class='line'>23/tcp   open  telnet
+</span><span class='line'>80/tcp   open  http
+</span><span class='line'>515/tcp  open  printer
+</span><span class='line'>9100/tcp open  jetdirect
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nun kennen wir also die aktuelle IP-Adresse des Druckers/Scanners. In meinem Fall lautet sie <code>192.168.1.102</code>. Bei Ihnen wird sie garantiert anders sein und ist im folgenden anzupassen.
+Da die IP-Adresse bei vielen aber nicht statisch, also fest vergeben ist, arbeiten wir lieber mit dem einzigartigen Hostnamen des Druckers/Scanners weiter. Den bekommen wir so raus:</p>
+
+<figure class='code'><figcaption><span>[Eingabe im Terminal bei Anpassung der IP-Adresse!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>tracepath 192.168.1.102
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In der darauf folgenden Ausgabe können wir den Hostnamen ablesen:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sailor79@ubuntu:~<span class="nv">$ </span>tracepath 192.168.1.102
+</span><span class='line'> 1:  ubuntu.local                                          0.062ms pmtu 1500
+</span><span class='line'> 1:  BRN001BA91A1762.local                                 0.781ms reached
+</span><span class='line'> 1:  BRN001BA91A1762.local                                 0.788ms reached
+</span><span class='line'>     Resume: pmtu 1500 hops 1 back 255
+</span><span class='line'>sailor79@ubuntu:~<span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Der Hostname in meinem Fall lautet also: <code>BRN001BA91A1762.local</code></p>
+
+<p>Nun brauchen wir noch aus der Treiber-Liste die exakte Schreibweise unseres Druckers/Scanner:</p>
+
+<figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brsaneconfig3 -q
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In einer langen Liste finde ich schließlich die Schreibweise <code>MFC-5490CN</code>.</p>
+
+<p>Nun können wir endlich den Scanner einrichten mit dem noch anzupassenden Befehl
+<code>brsaneconfig3 -a name=FRIENDLY-NAME model=MODEL-NAME nodename=HOSTNAME</code>
+einrichten.</p>
+
+<p>In unserem Beispiel (Sie müssen Ihre eigenen Namen wie vorher rausgefunden nehmen) ist:</p>
+
+<ul>
+<li>FRIENDLY-NAME: frei wählbar, ich nehme <code>Brother Scanner</code></li>
+<li>MODEL-NAME: <code>MFC-5490CN</code></li>
+<li>HOSTNAME: <code>BRN001BA91A1762.local</code></li>
+</ul>
+
+
+<p>Also gebe ich im Terminal ein:</p>
+
+<figure class='code'><figcaption><span>[im Terminal mit Änderung zu Ihrer IP-Adresse und Ihrem Hostnamen!]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brsaneconfig3 -a <span class="nv">name</span><span class="o">=</span>Brother Scanner <span class="nv">model</span><span class="o">=</span>MFC-5490CN <span class="nv">nodename</span><span class="o">=</span>BRN001BA91A1762.local
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Zur Sicherheit starte ich im Terminal den Scanner-Service neu:</p>
+
+<figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo service udev restart
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Danach können Sie den PC einmal neustarten und mit</p>
+
+<figure class='code'><figcaption><span>[Terminal mit STRG+ALT+t starten]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>xsane
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> testen, ob der Scanner funktioniert.</p>
+
+<h4>Schritt 4: Zum Schluss installieren wir noch die Scannertaste, um Scans nicht nur vom PC, sondern direkt vom Drucker bzw. Scanner an den PC schicken zu können:</h4>
+
+<p>Dazu laden wir zunächst <a href="http://www.brother.com/cgi-bin/agreement/agreement.cgi?dlfile=http://www.brother.com/pub/bsc/linux/dlf/brscan-skey-0.2.1-3.amd64.deb&amp;lang=English_lpr">scan-key-tool 64bit</a> in das Verzeichnis <code>Downloads</code> herunter.</p>
+
+<p>Anschließend installieren wir dieses Paket:</p>
+
+<figure class='code'><figcaption><span>[im Terminal zeilenweise mit RETURN-Taste abschließen]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span>
+</span><span class='line'><span class="nb">cd </span>Downloads
+</span><span class='line'>dpkg  -i  --force-all  *skey*.deb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Um zu Testen, ob Scanner-Treiber und das Tool für die Scantaste installiert sind, geben wir</p>
+
+<figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>dpkg  -l  |  grep  Brother
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in das Terminal ein. Darauf hin sollte folgende Ausgabe erscheinen:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Ausgabe:
+</span><span class='line'>sailor79@ubuntu:~<span class="nv">$ </span>dpkg  -l  |  grep  Brother
+</span><span class='line'>ii  brscan-skey                                                 0.2.1-3                                  Brother Linux scanner S-KEY tool
+</span><span class='line'>ii  brscan3                                                     0.2.11-4                                 Brother Scanner Driver
+</span><span class='line'>ii  mfc5490cncupswrapper:i386                                   1.1.2-2                                  Brother CUPS Inkjet Printer Definitions
+</span><span class='line'>ii  mfc5490cnlpr:i386                                           1.1.2-2                                  Brother lpr Inkjet Printer Definitions
+</span><span class='line'>ii  ptouch-driver                                               1.3-0ubuntu11                            CUPS/Foomatic driver <span class="k">for </span>Brother P-touch label printers
+</span><span class='line'>sailor79@ubuntu:~<span class="nv">$ </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wir finden <em>brscan-skey</em> und <em>brscan3</em>, also alles soweit in Ordnung.
+Nun starten wir das Scantasten-Tool mit:</p>
+
+<figure class='code'><figcaption><span>[im Terminal]  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brscan-skey
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> und können am Scanner mit der Scantaste benutzen. Als Ziel erscheint am Drucker selbst nicht wie bei MS Windows Ihr Computername sondern Ihr Ubuntu-Benutzername.</p>
+
+<blockquote><p>Das war es. Wenn Sie Fragen oder Anregungen haben, können Sie gerne einen Kommentar hinterlassen. Natürlich auch, wenn Ihnen der Artikel geholfen hat.</p></blockquote>
+
+<p>Quellennachweis:
+<a href="http://wiki.ubuntuusers.de/Brother/Scanner">wiki.ubuntuusers</a> | <a href="http://welcome.solutions.brother.com/bsc/public_s/id/linux/en/index.html">Brother</a>      <br/>
+Weiterführende Literatur:
+<a href="http://wiki.ubuntuusers.de/Brother/Scanner#Scankey-Tool-Optimierung">Scan(-tasten) einstellen</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen (Exkurs)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/"/>
+    <updated>2012-01-31T23:03:32+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen</id>
+    <content type="html"><![CDATA[<h2>Exkurs Finderlohn-Datei, um den Stick vielleicht wiederzubekommen</h2>
+
+<p>Dieser Teil in der Reihe USB-Stick im Alltag sicher benutzen ist weniger technisch als der letzte <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Artikel</a>.
+Hier möchte ich Ihnen kurz mein Konzept darstellen, wie ich die Wahrscheinlichkeit deutlich erhöhen möchte, einen verlorenen USB-Stick vom Finder wieder zu bekommen.<!-- more --></p>
+
+<p>Wie in den vorherigen Artikeln beschrieben, haben wir auf dem USB-Stick nur einen Ordner namens <code>Secure</code> mit dem Container und TrueCrypt portable. Da die oberste Ebene die ist, welche man als Finder sofort sieht, erstelle ich daneben eine einfache Textdatei mit dem Namen <code>Finderlohn-reward.txt</code>. Dies lenkt die Aufmerksamtkeit direkt auf sich.</p>
+
+<p><img src="../images/2012/01/Finderlohn.jpg" alt="Finderlohn Ordner USB-Stick" /></p>
+
+<p>In dieser Datei schreibe ich einem Texteditor folgendes rein:</p>
+
+<pre><code>Sehr geehrte(r) Finder(in),
+vielen Dank, dass Sie meinen verlorenen USB-Stick gefunden haben. 
+Die Daten auf dem Speicher sind verschlüsselt und somit unbrauchbar.
+
+Gerne bin ich bei einer Rücksendung bereit, Ihnen zum Dank einen 
+Finderlohn in Höhe des Wertes des USB-Sticks (15 Euro + Porto),
+beispielsweise per Paypal oder bar zu schicken.
+So haben Sie einen neuen USB-Stick mit Garantie, 
+und ich meine Daten wieder.
+
+Kontaktieren Sie mich einfach unverbindlich unter
+- E-Mail: mailto:email@email.de oder telefonisch unter
+- Mobil: +49 (01234) 567 890 123
+
+Vielen Dank für Ihre Hilfe.
+
+Mit freundlichen Grüßen
+Mein Name
+Adresse
+</code></pre>
+
+<p>Was halten Sie von der Idee?
+Es garantiert zwar nicht die Rückgabe des Sticks, aber es erleichtert die Ehrlichkeit des Finders meiner Meinung nach ungemein.
+Einziger Kritikpunkt wäre die Bekanntgabe persönlicher (Adress-)daten, jedoch geht die Wahrscheinlichkeit gegen Null, dass der/die zufällige FinderIn die Daten mißbraucht.</p>
+
+<p>Um aber nicht vom Finder abhängig zu sein, wollen wir uns im nächsten Artikel endlich mit dem Thema regelmäßiges Backup eines TrueCrypt-Containers beschäftigen. So können wir ggf. auf eine Rückgabe verzichten, direkt weiterarbeiten mit unseren Daten und uns selber einen neuen USB-Stick gönnen.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 4 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/"/>
+    <updated>2012-01-30T02:07:51+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden</id>
+    <content type="html"><![CDATA[<h2>TrueCrypt-Container per Batch-Script halbautomatisch (un-)mounten bzw. als Laufwerk einbinden</h2>
+
+<p>Nachdem wir einen TrueCrypt-Container <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">hier</a> erstellt haben und nun auch wissen, wie wir ihn in der Praxis als <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Windows-Laufwerk einbinden</a>, gehen wir nun einen Schritt weiter.
+Da es ein bißchen lästig ist, den Container jedesmal manuell als Laufwerk in Windows einzubinden (mounten), habe ich ein kleines Script erstellt, welches dies (halb-)automatisch für uns erledigt.<!-- more --> Warum halbautomatisch? Das Kennwort sollte und muss immer noch manuell eingegeben werden, da es sonst unverschlüsselt für jeden lesbar wäre und wir uns die ganze Arbeit hätten sparen können.</p>
+
+<p>Im unserem Ordner <code>Secure</code> auf dem USB-Stick erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>Start.bat</code> ab.
+Wichtig ist, dass sich die Datei <code>Start.bat</code> im gleichen Ordner wie die Datei <code>Truecrypt.exe</code> sowie dem TrueCrypt-Container befindet!</p>
+
+<blockquote><p>Allerdings muss jeder zwei kleine Anpassungen im Code machen:</p></blockquote>
+
+<ol>
+<li><p>In Zeile 11 kann das <code>J</code> in <code>set Wunsch_LW=J</code> durch einen anderen Wunschlaufwerksbuchstaben ersetzt werden. Dieser wird, sofern er nicht schon in Benutzung ist, als Laufwerk benutzt. Andernfalls wird der erste freie Buchstabe im aktuell laufenden System ausgelesen und stattdessen benutzt.</p></li>
+<li><p>In Zeile 13 MUSS <code>namedatendatei</code> in <code>set Container=namedatendatei</code> durch den eigenen gewählten Namen der TrueCryptcontainer-Datei ersetzt werden. In unserem <a href="http://home-server-mind.com/?p=784">Beispiel</a> haben wir den Container bzw. die Datei einfach <code>daten</code> genannt.
+Man kann die Datei übrigens auch ein wenig tarnen, indem man sie z.B. Tabelle.xls oder werbung.mpeg benennt.</p></li>
+</ol>
+
+
+<figure class='code'><figcaption><span>[Start.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'><span class="c">::*******************************************************************************************************</span>
+</span><span class='line'><span class="c">:: mw2012, TrueCryptcontainer mit dieser BATCH-Datei automatisch mit Wunschlaufwerksbuchstabe mounten****</span>
+</span><span class='line'><span class="c">:: Wenn Buchstabe schon belegt, wird erster freier Buchstabe im System genommen und als Hinweis ausgeben*</span>
+</span><span class='line'><span class="c">:: Achtung: Dieser Batchdatei muss im selben Ordner wie TrueCrpt.exe sowie Containerdatei liegen!********</span>
+</span><span class='line'><span class="c">:: Dass Kennwort bzw. die Passphrase wird nach dem Aufruf abgefragt. Bitte NIE hier hinterlegen!!!!!!!!!*</span>
+</span><span class='line'><span class="c">::*******************************************************************************************************</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">::*****Ab hier Änderung ERFORDERLICH!******************************</span>
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;J&#39; durch Wunschlaufwerksbuchstaben ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Wunsch_LW</span><span class="o">=</span>J
+</span><span class='line'><span class="c">:: In nächster Zeile &#39;daten3&#39; durch Containernamen ersetzen:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Container</span><span class="o">=</span>namedatendatei
+</span><span class='line'><span class="c">::*****Ab hier KEINE Änderungen machen*****************************</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">:: wenn Laufwerk nicht vorhanden, dann mounten</span>
+</span><span class='line'><span class="c">:: An dieser Stelle könnten man noch einen Anti-Keylogger einbauen, z.B. MOK</span>
+</span><span class='line'><span class="k">cd</span> <span class="nv">%Wunsch_LW%</span>: &amp;&amp; <span class="k">goto</span> <span class="nl">LW_Vorhanden</span>
+</span><span class='line'><span class="c">:: Fehlermeldung,dass LW nicht vorhanden (gewollt), lässt sich mir 2&gt;NUL und &gt;NUL nicht umleiten</span>
+</span><span class='line'><span class="k">echo</span> ...und daher den gewollten Laufwerksbuchstaben benutzen.
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%Wunsch_LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'>exit
+</span><span class='line'>
+</span><span class='line'><span class="c">:: Wenn Laufwerk vorhanden, dann ersten freien Buchstaben suchen &gt;</span>
+</span><span class='line'><span class="c">:: Quelle: Codeschnipsel aus http://www.heise.de/ct/hotline/Freien-Laufwerksbuchstaben-finden-322906.html</span>
+</span><span class='line'><span class="nl">:LW_Vorhanden</span>
+</span><span class='line'><span class="k">if</span> not <span class="s2">&quot;%OS%&quot;</span><span class="o">==</span><span class="s2">&quot;Windows_NT&quot;</span> exit <span class="n">/b</span>
+</span><span class='line'><span class="k">setlocal</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">ll</span><span class="o">=</span>D E F G H I J K L M N O P Q R S T U V W X Y Z
+</span><span class='line'><span class="k">for</span> <span class="nv">%%l</span> in (<span class="nv">%ll%</span>) <span class="k">do</span> (
+</span><span class='line'>  <span class="k">set</span> <span class="nv">LW</span><span class="o">=</span><span class="nv">%%l</span>
+</span><span class='line'>  mountvol <span class="nv">%%l:</span> <span class="n">/L</span> <span class="p">&gt;</span><span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   subst <span class="p">|</span> <span class="n">findstr</span> <span class="n">/B</span> <span class="s2">&quot;%%l:&quot;</span> <span class="p">&gt;</span> <span class="n">nul</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> (
+</span><span class='line'>   net use <span class="nv">%%l:</span> <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;<span class="m">1</span>
+</span><span class='line'>  <span class="k">if</span> <span class="k">errorlevel</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">gotone</span>
+</span><span class='line'>   )
+</span><span class='line'>  )
+</span><span class='line'>)
+</span><span class='line'><span class="k">echo</span> Zurzeit ist kein Laufwerksbuchstabe frei<span class="p">,</span> Container konnte nicht NICHT eingebunden werden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit <span class="n">/b</span>
+</span><span class='line'><span class="nl">:gotone</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">:: Laufwerk unter gefundenem freien Buchstaben mounten und Hinweismeldung ausgeben</span>
+</span><span class='line'><span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/v</span> <span class="nv">%cd%</span>\<span class="nv">%Container%</span> <span class="n">/l</span> <span class="nv">%LW%</span> <span class="n">/a</span> <span class="n">/quit</span>
+</span><span class='line'><span class="k">echo</span> Der gewünschte Laufwerksbuchstabe ist schon vergeben. Der Container ist nun erfolgreich als Laufwerk <span class="nv">%LW%</span>: eingebunden.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'>exit
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Das war es schon. Statt den umständlichen Weg über TrueCrypt startet man mit einem Doppelklick nur noch die Datei <code>Start.bat</code>, und gibt sein Kennwort ein. Der Rest geht automatisch.</p></blockquote>
+
+<p>Hinweis: Im obigen Script ist übrigens ein Platzhalter für einen Anti-<a href="http://de.wikipedia.org/wiki/Keylogger">Keylogger</a> wie <a href="http://www.myplanetsoft.com/free/mouse-only-keyboard.php">MOK</a> für ganz vorsichtige bzw. konsequente Zeitgenossen eingebaut. Hier würde man die Zeile 17 durch <code>Start %cd%/mok.exe</code> ersetzen und müsste in Zeile 23 und zwischen Zeile 47 und 48 noch <code>pskill %cd%/mok.exe</code> einfügen. Der Prozess-Stopper psKill ist allerdings nicht standardmäßig in Windows integriert und kann <a href="http://technet.microsoft.com/en-us/sysinternals/bb896683">hier</a> geladen werden.</p>
+
+<h4>TrueCrypt-Container trennen</h4>
+
+<p>Um das TrueCrypt-Laufwerk wieder zu schließen (unmounten), kann man entweder in TrueCrypt auf <em>Alle Trennen</em> klicken, oder eine kleine Batch-Datei namens <code>Stop.bat</code> mit nachfolgendem Inhalt wie oben auch im gleichen Ordner erstellen:</p>
+
+<figure class='code'><figcaption><span>[Stop.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="p">    </span>
+</span><span class='line'><span class="p">    @</span><span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'>    <span class="k">echo</span> Entferne alle TrueCrypt-Laufwerke...
+</span><span class='line'>    <span class="nv">%cd%</span>\TrueCrypt.exe <span class="n">/d</span> <span class="n">/q</span>
+</span><span class='line'>    exit
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Weiterlesen&#8230;</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 3 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/"/>
+    <updated>2012-01-30T01:55:53+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt</id>
+    <content type="html"><![CDATA[<h2>Bedienungsanleitung TrueCrypt</h2>
+
+<p>Im <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">vorherigen</a> Artikel haben wir den USB-Stick vorbereitet und einen verschlüsselten Container in Form einer Datei erstellt. Dieser Artikel zeigt in Kurzform, wie man den USB-Stick nun im Alltag manuell benutzt. <!-- more --></p>
+
+<ol>
+<li><p>Die Datei <code>TrueCrypt.exe</code> im Ordner Secure auf USB-Stick starten und auf <em>Datei&#8230;</em> klicken.
+<img src="../images/2012/01/Dateiauswahl.jpg" alt="Dateiauswahl" /></p></li>
+<li><p>Nun die eben erstellte Datei <code>Daten</code> in Ordner Secure auf USB-Stick wählen und auf <em>Öffnen</em> klicken.
+<img src="../images/2012/01/Datei_auswaehlen2.jpg" alt="Datei auswählen" /></p></li>
+<li><p>Anschließend einen freien Laufwerksbuchstaben wählen (hier <code>N:</code>) und auf <em>Einbinden</em> klicken.
+<img src="../images/2012/01/Datei_einbinden.jpg" alt="Datei einbinden" /></p></li>
+<li><p>Das eben erstellte Kennwort bzw. die Passphrase eingeben und auf <em>OK</em> klicken.
+<img src="../images//2012/01/Datei_Passphrase.jpg" alt="Container Passphrase" /></p></li>
+</ol>
+
+
+<blockquote><p>Das war es. Der Container ist nun als Laufwerk N im Windows-Explorer zu finden. Hier kann man nun nach Belieben Dateien kopieren, verändern und löschen.</p></blockquote>
+
+<p><img src="../images/2012/01/LaufwerkN.jpg" alt="Neuer Laufwerksbuchstabe" /></p>
+
+<h4>Laufwerk wieder Trennen</h4>
+
+<p>Hat man alles erledigt, schließt man alle Dateien und klickt im TrueCrypt-Fenster zunächst auf <em>Trennen</em> und dann auf <em>Beenden</em>.<br/>
+Hinweis: Der Trennvorgang kann mehrere Minuten dauern.<br/>
+<img src="../images/2012/01/LaufwerkN_trennen.jpg" alt="Laufwerk N: wieder trennen" /></p>
+
+<p>Das war es auch schon. Ist doch ganz einfach, oder?</p>
+
+<blockquote><p>Weil das auf Dauer aber doch immer ein bißchen Mühsam ist, schauen wir uns im nächsten Artikel an, wie man das Einbinden des TrueCrypt-Containers als Windows-Laufwerk deutlich beschleunigen kann. Hierzu erstellen wir ein Batch-Script,&#8230;
+<a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Weiterlesen&#8230;</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 2 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/"/>
+    <updated>2012-01-30T01:52:25+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen</id>
+    <content type="html"><![CDATA[<h2>Anleitung USB-Stick teilweise verschlüsseln</h2>
+
+<p>In diesem Teil möchte ich aufzeigen, wie einfach es ist, die Daten mit dem kostenlosen Tool <a href="http://www.truecrypt.org/docs/?s=truecrypt-portable"> TrueCrypt</a> zu verschlüsseln.</p>
+
+<blockquote><p>Allerdings habe ich die Anforderung, dass ich den Stick auf jedem beliebigen Windows-PC, also auch bei Freunden oder in der Firma, wenn erlaubt, einsetzen möchte, ohne eine Software installieren zu müssen.
+Dies ist realisierbar, indem wir den USB-Stick nicht komplett verschlüsseln, sondern nur einen Teilbereich.<!-- more --></p></blockquote>
+
+<h4>Vorbereitungen:</h4>
+
+<p>Konkret bedeutet dies, das wir einen sogenannten Container erstellen und auf dem für alle sichtbaren Bereich eine direkt ausführbare Version von  TrueCrypt hinterlegen, welche keine Installation erfordert. An dieser Stelle möchte ich darauf hinweisen, dass trotzdem Administrator-Rechte auf dem jeweiligen PC notwendig sind, um TrueCrypt erfolgreich und sicher ausführen zu können.</p>
+
+<p>Hierzu machen wir uns einfach die aktuelle portable Version (7.1 stable) von TrueCrypt zu nutze, welche man <a href="http://www.truecrypt.org/downloads">hier</a> laden kann. Um die Echtheit der Herkunft des Downloads zu prüfen, sei an dieser Stelle an folgenden <a href="http://www.truecrypt.org/docs/?s=digital-signatures">Link</a>  verwiesen.</p>
+
+<p>Der nun geladene Installer lässt sich lokal installieren oder als portable Version extrahieren:</p>
+
+<p>Zunächst starten wir die Datei <code>TrueCrypt Setup 7.1.exe</code> und bestätigen die Lizenzbedingungen. Im nächsten Schritt wählen wir <code>Extract</code> und klicken auf &#8216;Next&#8217;. Abschließend wählen wir den Ordner, in welchem die TrueCrypt-Dateien zunächst kopiert werden sollen.</p>
+
+<p><img src="../images/2012/01/tc1.png" alt="Lizenzbedingungen TrueCrypt" /><img src="../images/2012/01/tc2_extract.png" alt="TrueCrypt Option Extract" /><img src="../images/2012/01/tc2_folder1.png" alt="TrueCrypt Extract-Ordner wählen" /></p>
+
+<p><span class='pullquote-right' data-pullquote='Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.'>Nun widmen wir uns dem USB-Stick. Ich gehe hier davon aus, dass der USB-Stick neu bzw. leer ist. Wenn nicht, bitte vorher alle Daten auf den PC kopieren, sodass der USB-Stick leer ist und bei einem Fehler keine Daten versehentlich gelöscht werden.
+Wir erstellen auf dem USB-Stick nun einen neuen Ordner mit dem Namen <code>Secure</code>. In diesen Ordner kopieren wir die vorher nach <code>C:\Temp\TC_Files</code> bzw. in den von Ihnen angegebenen Ordner extrahieren Daten hinein und starten die Datei <code>TrueCrypt.exe</code>.</p>
+
+<p>Wer möchte kann sich <a href="http://www.truecrypt.org/download/thirdparty/localizations/langpack-de-1.0.0-for-truecrypt-7.1.zip">hier</a> die aktuelle deutsche Sprachdatei bzw. <a href="http://www.truecrypt.org/localizations">hier</a> seine bevorzugte Sprachdatei laden und ebenfalls in den Ordner <code>Secure</code> auf den USB-Stick kopieren. Die Standardeinstellung ist ansonsten Englisch.</span></p>
+
+<h4>TrueCrypt-Container erstellen:</h4>
+
+<ol>
+<li><p><em>Volumen erstellen</em> klicken<br/>
+<img src="../images/2012/01/1_start2.jpg" alt="TC Start" /></p></li>
+<li><ul>
+<li> <em>Eine verschlüsselte Containerdatei erstellen</em> wählen</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort11.jpg" alt="TC Speicherort 1 von 2" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Als Pfad auf den USB-Stick in den Ordner <code>Secure</code> gehen</li>
+<li> Dateinamen für Container-Datei eingeben, z.B. <code>Daten</code></li>
+<li> <em>Speichern</em> klicken<br/>
+<img src="../images/2012/01/tc3_speicherort2.jpg" alt="Pfad im Ordner Secure und Dateinamen wählen" /></li>
+</ul>
+</li>
+<li><p><em>Weiter</em> klicken</p>
+
+<blockquote><p>Hinweis: Die Standardeinstellungen sind ausreichend. Mehr Informationen findet man <a href="http://www.truecrypt.org/docs/encryption-algorithms">hier</a> und <a href="http://www.truecrypt.org/docs/hash-algorithms">hier</a>.<br/>
+<img src="../images/2012/01/tc3_verschluesselung.jpg" alt="Verschlüsselung wählen" /></p></blockquote></li>
+<li><ul>
+<li> Die Größe des Containers als ganze Zahl eingeben. Der maximale Speicherplatz steht in         Fettschrift darunter. Ich würde mindestens 100 MB frei lassen.</li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselunggroesse.jpg" alt="Volumen-Größe" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Nun muss eine Passphrase eingeben werden. Ein gutes Kennwort erstellt man am besten, indem man einen für sich einfach zu merkenden Satz wählt mit Groß- und Kleinschreibung, ein paar Zahlen und Sonderzeichen. Ich habe hier folgendes gewählt:
+
+<pre><code> MiteinemSatzkannmansichesgutmerken2012.
+</code></pre></li>
+<li> <em>Weiter</em> klicken<br/>
+<img src="../images/2012/01/tc3_verschluesselungpassword.jpg" alt="Volumen-Kennwort" /></li>
+</ul>
+</li>
+<li><ul>
+<li> Anschließend wählt man das Datei-System der Container-Datei. Hier sollte <code>FAT</code> nur gewählt werden, wenn man weiß, dass man den Stick auf einem alten Rechner mit <code>Fat32</code> Dateisystem benutzt, ansonsten ist <code>NTFS</code> die richtige Wahl.</li>
+<li> Nun sollte man die Maus mindestens 30 Sekunden in dem aktiven Fenster hin und her bewegen. Dies trägt zu einer verbesserten Verschlüsselung vorbei.</li>
+<li> Danach auf <em>Formatieren</em> klicken. Die Dauer dieses Vorgangs ist abhängig von der gewählten Größe und kann zwischen wenigen Minuten und mehreren Stunden dauern. Hier ist also Geduld gefragt!<br/>
+<img src="../images/2012/01/tc3_verschluesselungsformat.jpg" alt="Verschlüsselungsformat" /></li>
+</ul>
+</li>
+<li><p>Wenn die Formatierung abgeschlossen ist, muss man die Erfolgsmeldung per Klick auf <em>OK</em> quittieren.<br/>
+<img src="../images/2012/01/tc3_verschluesselungzerfolgm.jpg" alt="Erfolgsmeldung" /></p></li>
+<li><p>Abschließend per Klick auf <em>Beenden</em> die Prozedur schließen.<br/>
+<img src="../images/2012/01/tc3_verschluesselungbeenden.jpg" alt="Beenden" /></p></li>
+</ol>
+
+
+<blockquote><p>Das wäre also geschafft. Jetzt schauen wir uns an, wie man den Container in der Praxis benutzt. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">Weiterlesen&#8230;</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[USB-Stick im Alltag sicher benutzen, (Teil 1 von 6)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln/"/>
+    <updated>2012-01-29T16:20:08+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/usb-stick-sichern-teil-1-verschlusseln</id>
+    <content type="html"><![CDATA[<h2>Einleitung</h2>
+
+<h3>Ein USB-Stick ist ein praktischer kleiner Datenspeicher für unterwegs. Nur was passiert, wenn man ihn verliert?</h3>
+
+<p>Ich sehe hier gleich drei Fragestellungen:</p>
+
+<blockquote><ol>
+<li>Was macht der Finder mit meinen persönlichen/ geschäftlichen Daten?</li>
+<li>Wie erhöhe ich die Wahrscheinlichkeit, dass ich den USB-Stick von dem/der Finder(in)     zurückzubekommen?</li>
+<li>Habe ich ein aktuelles Backup meiner USB-Stick Daten?<!-- more --></li>
+</ol>
+</blockquote>
+
+<p>In der Regel haben sich die meisten Nutzer vorher keine Gedanken gemacht oder gar Vorkehrungen getroffen, und geraten bei einem Verlust zurecht in Panik.</p>
+
+<p>In einer Reihe von nachfolgenden Artikeln möchte ich Sie systematisch an das Thema heranführen und Ihnen aufzeigen, wie einfach es ist, o.g. Probleme mit einfachen Mitteln zu vermeiden. Wenn Sie das komplette Konzept nacharbeiten bzw. umsetzen wollen, lesen sie einach immer bis zum Ende des Artikels und klicken den Link Weiterlesen.
+Ansonsten können Sie auch direkt quer in das jeweilige für Sie relevante Thema einsteigen, indem sie den folgenden Links folgen:</p>
+
+<ul>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">USB-Stick vorbereiten und mit TryCrypt teilweise verschlüsseln</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-3-von-6-einfache-bedienungsanleitung-truecrypt/">TrueCrypt im Alltag benutzen für Anfänger</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-4-von-6-truecrypt-container-per-batch-script-halb-automatisch-mounten-bzw-als-laufwerk-einbinden/">Expertenmodus: TrueCrypt per Batch-Datei (halb-)automatisch mounten (Laufwerk einbinden)</a></li>
+<li><a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-5-von-6-stick-einfacher-zuruckbekommen/">Kurzer Exkurs zum Thema: Den Finder animieren, den Stick zurückzugeben</a></li>
+<li>Manuelles Backup eines TrueCrypt-Containers erstellen</li>
+<li>Regelmäßiges automatisiertes inkrementielles Backup eines TrueCrypt-Containers erstellen</li>
+</ul>
+
+
+<p>Dieses Tutorial richtet sich in erster Linie an Windows-Benutzer, also Windows XP, Vista, Windows 7, Windows 7 Ultimate und 64bit. Konzeptionell ist es natürlich auf GNU/Linux und Mac OS X übertragbar. <a href="http://home-server-mind.com/usb-stick-im-alltag-sicher-benutzen-teil-2-von-6-anleitung-truecrypt-container-erstellen/">Weiterlesen&#8230;</a></p>
+
+<p><a class="fancybox" rel="Mindmap" href="../images/2012/01/Verlust-USB-Stick--1024x136.png" title="Mindmap"><img src="../images/2012/01/Verlust-USB-Stick-.png" alt="Mindmap"></a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Website-Dateien automatisch per FTP auf den WHS sichern]]></title>
+    <link href="http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern/"/>
+    <updated>2012-01-08T20:16:32+01:00</updated>
+    <id>http://sailor79.github.com/homeservermind/website-dateien-automatisch-per-ftp-auf-den-whs-sichern</id>
+    <content type="html"><![CDATA[<p>Dieser Artikel beschreibt eine Möglichkeit, alle Dateien im Webspace (der auf der eigenen Domain gehosteten Wordpress-Website) mit Dateiattributen und Ordnerrechten automatisch zu sichern. Ziel ist es, täglich eine automatische Sicherung über FTP durchzuführen. Eine Beschreibung der Datenbanksicherung über phpmyadmin wird in diesem Artikel noch nicht betrachtet.<!-- more --></p>
+
+<h4>Hierzu habe ich folgende Anforderungen an das Backup für meine private Website:</h4>
+
+<blockquote><ul>
+<li>Kommandozeilenbasiert, so dass ein Shell-Script zeitgesteuert (automatisch) über den Windows-Taskplaner aufgerufen werden kann</li>
+<li>Ausführung über den Windows Home Server (WHS) möglich, da dieser durchgängig läuft</li>
+<li>Traffic schonend, d.h. inkrementielles Backup, so dass nur geänderte Dateien heruntergeladen werden</li>
+<li>sFTP wäre schön, ist für meine private Seite aber nicht zwingend erforderlich</li>
+<li>Ein Backup für die letzten sieben Tage (1/Tag) ist für mich ausreichend</li>
+</ul>
+</blockquote>
+
+<p>Nach längerer Recherche habe ich mich für das freie GNU-Projekt Wget entschieden, welches <a href="http://gnuwin32.sourceforge.net/packages/wget.htm">hier</a> als 32bit-Windows-Version erhältlich ist. Leider unterstützt Wget nicht sFTP, was in meinem Fall jedoch kein Problem darstellt. Weiterhin benötige ich zur zuverlässigen Ermittlung des Wochentags noch das Kommandozeilentool robocopy, welches in Windows Vista, Windows 7 und Windows Server 2008 standardmäßig integriert ist. Da der Windows Home Server (erste Version) auf Windows Server 2003-SP3 basiert, muss man hier noch die <a href="http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=17657">Microsoft Resource Kit Tools</a> auf dem WHS nachinstallieren.</p>
+
+<p>Nun ist alles vorbereitet, um das Backup in einem Batch-Script zu implementieren, so dass dieses später nur noch über den Taskplaner automatisch aufgerufen werden muss. Hierzu erstellt man sich zunächst auf dem WHS einen Ordner <code>Backup/websites/domain.tld</code>. Mit <code>domain.tld</code> ist der Name der zu sichernden Website gemeint, z.b. <code>home-server-mind.com</code>. In diesem Verzeichnis werden nun die Unterordner <code>Montag</code>, <code>Dienstag</code>,&#8230;,<code>Sonntag</code> erstellt.</p>
+
+<p>Im Ordner <code>Backup/websites/domain.tld</code> erstellt man nun mittels Windows-Editor oder noch schöner mit <a href="http://notepad-plus-plus.org/download/v5.9.8.html">Notepad++</a> eine Textdatei, kopiert nachfolgenden Code hinein und speichert diese Datei als <code>week_rotation.bat</code>.</p>
+
+<figure class='code'><figcaption><span>[week_rotation.bat]</span><a href='http://www.admini.de/batch-infos.htm'>Batch-Programmierung</a></figcaption> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">::-- FTP-Backup mit wget und robocopy als 7-Tage-Woche-Rotation</span>
+</span><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">on</span> &amp; <span class="k">setlocal</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">::--mittels wget und ftp-logindaten Daten ins aktuelle Verzeichnis dieser </span>
+</span><span class='line'><span class="c">::  batch-Datei holen (spiegeln inkl. Dateiatrribute, Ordnerrechte etc.)</span>
+</span><span class='line'>wget -m -o backup.log ftp:<span class="n">//user:password@domain.tld/</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">::--- Wochentag ermitteln für Ordnernamen, danke an User Biber von administrator.de</span>
+</span><span class='line'><span class="k">for</span> <span class="n">/f</span> <span class="s2">&quot;tokens=3&quot;</span> <span class="nv">%%i</span> in (<span class="s1">&#39;robocopy /?^|find &quot;Started&quot;&#39;</span>) <span class="k">do</span> (
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Mon&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Montag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Tue&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Dienstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Wed&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Mittwoch&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Thu&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Donnerstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Fri&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Freitag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sat&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Samstag&quot;</span>
+</span><span class='line'>   <span class="k">IF</span> <span class="s2">&quot;%%i&quot;</span> <span class="o">==</span> <span class="s2">&quot;Sun&quot;</span> <span class="k">set</span> <span class="s2">&quot;wochentag=Sonntag&quot;</span>
+</span><span class='line'>   )
+</span><span class='line'>
+</span><span class='line'><span class="c">::-- Daten in aktuellen Wochentag-Unterordner inkl. aller Dateiattribute/Rechte verschieben</span>
+</span><span class='line'>robocopy D:\Backup\websites\domain.tld\new D:\Backup\websites\domain.tld\<span class="nv">%wochentag%</span> <span class="n">/MIR</span>
+</span><span class='line'>RMDIR D:\Backup\websites\domain.tld\new
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Im Code muss nun in Zeile 5 der Ausdruck <code>user:password</code> durch die persönlichen FTP-Login-Daten ersetzt werden sowie in den Zeilen 5, 20 und 21 der Ausdruck <code>domain.tld</code> durch den Namen der eigenen Website (ohne <code>http://www</code>).</p>
+
+<p>Zu guter letzt muss die Datei <code>week_rotation.bat</code> in den Taskplaner eingebunden werden. Dazu verbindet man sich zunächst mit dem WHS per Remotedesktopverbindung (nicht über die Windows Home Server-Konsole) und öffnet über START > SYSTEMSTEUERUNG > GEPLANTE TASKS den <em>Geplanten Task hinzufügen</em>-Dialog. Hier nimmt man gemäß nachfolgender Bilder in den ersten drei Reitern die abgebildeten Einstellungen vor:</p>
+
+<p>Unter <em>TASK > AUSFÜHREN</em> wählt man die soeben erstellte Datei <code>week_rotation.bat</code>, unter <em>TASK > AUSFÜHREN IN</em> wählt man den gleichen Ordner und unter <em>TASK > AUSFÜHREN ALS</em> sollte ein lokaler Administrator gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r1.jpg" alt="Reiter Task" /></p>
+
+<p>Im Reiter <em>Zeitplan</em> habe ich die tägliche Ausführung um 00:10 Uhr gewählt, da mein Internet-Provider ggf. um 00:00 Uhr täglich eine kurze Zwangstrennung durchführt. Die Uhrzeit sollte also sinnvoll gewählt werden:</p>
+
+<p><img src="../images/2012/01/task_r2.jpg" alt="Reiter Zeitplan" /></p>
+
+<p>Im Reiter <em>Einstellungen</em> lasse ich den Task nach sechs Stunden beenden, falls er sich aufgehangen hat und setze mindestens ein Häckchen bei Computer zum Ausführen reaktivieren:</p>
+
+<p><img src="../images/2012/01/task_r3.jpg" alt="Reiter Einstellungen" /></p>
+
+<blockquote><p>Das war es schon. Zum Testen die Datei <code>week_rotation.bat</code> manuell starten und überprüfen, ob es funktionert. Ggf. sollte man noch seine Firewall-Einstellungen betreffend Wget und den Ports 20 und 21 überprüfen.</p></blockquote>
+
+<hr />
+
+<p><em>Weiterführende Literatur:</em>
+Wget <a href="http://wget.addictivecode.org/FrequentlyAskedQuestions">FAQ</a>, <a href="http://www.gnu.org/software/wget/manual/html_node/index.html">Manual</a> | Robocopy <a href="http://de.wikibooks.org/wiki/Datensicherung/_Werkzeuge/_Kopieren/_ROBOCOPY">Allgemein</a>, <a href="http://technet.microsoft.com/de-de/library/cc733145%28WS.10%29.aspx">FAQ</a> | Batch-Programmierung <a href="http://www.admini.de/batch-infos.htm">Allgemein</a>, <a href="http://de.wikibooks.org/wiki/Batch-Programmierung">Beispiele</a> | Cron-Jobs unter Windows <a href="http://www.msxfaq.de/howto/mstask.htm">Allgemein</a> | Misc <a href="http://en.wikipedia.org/wiki/Backup_rotation_scheme">Backup-Rotations-Schemata</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bootcamp 3.1 lässt sich (auch) nicht mit Apple Software Update auf Windows 7 64bit installieren]]></title>
+    <link href="http://sailor79.github.com/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/"/>
+    <updated>2010-10-14T20:46:05+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren</id>
+    <content type="html"><![CDATA[<h2>Bootcamp 3.1 erscheint immer wieder im Apple Software-Update(r)</h2>
+
+<p>Nachdem wir im vorherigen <a href="http://home-server-mind.com/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/">Artikel</a> die erste Hürde mit Bootcamp 3.0 gemeister haben, wird es nun mit Bootcamp 3.1 um einiges aufwändiger.<!-- more --></p>
+
+<p>Ich habe dieses Update schon vorher auf der Apple-Download-Seite <a href="http://support.apple.com/de_DE/downloads/#macoscomponents">Apple-Download-Seite</a> runtergeladen und starte die Datei namens <code>BootCamp_3.1_64-bit.exe</code>, sodass ich das Apple Software-Update zunächst garnicht benötige.</p>
+
+<p>Dieses Update läuft scheinbar gut durch, allerdings stelle ich nach einem Neustart fest, dass dieses Update immer noch im Apple Software-Update(r)-Programm steht, mit welchen man unter Windows neue Treiber etc. erhält.</p>
+
+<p>OK denke ich, vielleicht lag es daran, dass ich es direkt geladen habe und es nicht über die Apple Software Update-Schnittstelle installiert habe. Gesagt getan, nun lädt Apple Software Update die Bootcamp3.1-Datei runter und installiert diese. Leider muss ich nach einem Neustart feststellen, dass dieses Update schon wieder dort unter verfügbare Updates auftaucht, d.h. nicht installiert wurde. Als Administrator starten und/oder mittels Kompatibilitäsmodus installieren hat hier leider nicht weitergeholfen.</p>
+
+<p>Nach einer Weile Suche in diversen Mac-Foren und einigem Ausprobieren bin ich darauf gestoßen, dass das Update Probleme mit dem Nvidea-Treiber (Nvidea Gforce 9400) innerhalb des 3.1 Update-Paketes in Kombination mit dem schon installierten Bootcamp 3.0 hat, d.h. die jeweils integrierten Nvidea-Treiber sind im Windows Installer scheinbar irgendwie nicht miteinander kompatibel.</p>
+
+<h4>Im Apple-Discussion-Forum fand ich dann schließlich doch den Ansatz einer Lösung, der sich nach einigem Ausprobieren zum folgendem Workaround entwickelt hat:</h4>
+
+<ol>
+<li><p>Zunächst lädt man sich auf der Apple-Download-Seite die Datei <a href="http://support.apple.com/downloads/DL979/de_DE/BootCamp_3.1_64-bit.exe">http://support.apple.com/downloads/DL979/de_DE/BootCamp_3.1_64-bit.exe</a>.</p></li>
+<li><p>Dann benötigt man den Universal Extractor, welchen man <a href="http://legroom.net/software/uniextract">hier</a> laden kann und installiert diesen.</p></li>
+<li><p>Nun Deinstallieren wir zunächst über Systemsteuerung/ Programm deinstallieren/ Bootcamp 3.0.</p></li>
+<li><p>Wir erstellen auf <code>c:\</code> einen Orderner namens &#8220;Source&#8221;, also <code>c:\source</code> und kopieren dort die Datei <code>Bootcamp64.msi</code> hinein, zu finden auf der MacOS X-Install-DVD unter <code>Boot Camp\drivers\Apple\Bootcamp64.msi</code>.</p></li>
+<li><p>Jetzt widmen wir uns der unter 1. runtergeladener 3.1-Update-Datei und extrahieren diese mittels Klick mit rechter Maustaste auf diese Datei und wählen Uniextract hier. Damit erhält man vier neue Dateien:<br/>
+<img src="../images/2010/10/bootcampupdate64_msi-300x215.png" alt="bootcampupdate64.msi" /></p></li>
+<li><p>Wir kopieren die Datei <code>BootCampUpdate64.msp</code> auch in das unter 4. erstellte Verzeichnis <code>c:\source</code>.</p></li>
+<li><p>Nun führen wir unter Start/Ausführen folgenden Befehl aus und warten ungefähr zwei Minuten:
+<code>msiexec /a C:\SOURCE\BootCamp64.msi /p C:\SOURCE\BootCampUpdate64.msp</code>Damit erstellen wir neue Dateien, in denen die Treiber des 3.1-Update in das 3.0-Update gepackt werden, mit Ausnahme des Grafiktreibers, welchem wir uns später zuwenden.</p></li>
+<li><p>Nach einiger Zeit sieht das Verzeichnis <code>C:\source</code>so aus:<br/>
+<img src="../images/2010/10/extrahierteDateienUniextract-300x159.png" alt="extrahierte 4 Dateien mit Uniextract" /></p></li>
+<li><p>Nun starten wir die veränderte Datei <code>Bootcamp64.msi</code> und installieren diese. Es ist war zwar die ursprüngliche 3.0-Update-Datei, jetzt aber mit allen Treiber-Updates des Bootcamp 3.1-Updates.</p>
+
+<blockquote><p>Nach einem Neustart des Systems stellen wir fest, dass Bootcamp 3.1 installiert ist und  nicht mehr als verfügbares Update im Apple Software-Update(r) angezeigt wird.</p></blockquote></li>
+</ol>
+
+
+<p>Nun sollten alle Probleme mit dem Apple Trackpad, mit der roten LED beim Audio-Port und mit dem Wireless Keyboard sowie der Apple Magic Mouse behoben sein.</p>
+
+<h4>Allerdings haben wir so die Installation der Grafikkartentreiber übergangen und müssen deren Treiber aus dem 3.1 Update noch installieren:</h4>
+
+<p> i) Wir wenden uns nochmal der unter 5. extrahierten Dateien zu mit Fokus auf die Datei <code>NvideaGraphics64.cab</code>. Hier klicken wir wieder mittels rechter Maustaste auf diese Datei und wählen <em>Uniextract hier</em>, sodass wir wir eine zusätzliche Datei in diesem Ordner namens <code>NVideaGrfx64.cab</code>erhalten.</p>
+
+<p><img src="../images/2010/10/NVideaGraphics64-300x154.png" alt="NVideaGraphics64.cab" /></p>
+
+<p>  ii) Jetzt klicken wieder wieder mittels rechter Maustaste auf diese neue Datei und wählen <em>Uniextract hier</em>. Nun haben wir es komplett entpackt und finden Folgendes vor:</p>
+
+<p><img src="../images/2010/10/extrahierteGrafikkartentreiberNvidea-300x165.png" alt="extrahierte Grafikkartentreiber Nvidea" /></p>
+
+<p>   iii) Danach einfach auf <code>Setup.exe</code> (doppel-)klicken und der neue Grafikkartentreiber aus dem Bootcamp 3.1-Update wird auch (endlich) installiert.</p>
+
+<p>Die bei <a href="http://www.nvidea.de">NVidea</a> angebotenen Treiber für die Gforce 9400 funktionieren hier leider nicht, so dass diese Vorgehensweise zwingend erforderlich ist.</p>
+
+<p>iv) Letzter Neustart und endlich fertig.</p>
+
+<blockquote><p>Herzlichen Glückwunsch, nun haben Sie erfolgreich alle aktuellen Treiber inkl. Grafikkartentreiber mittels Bootcamp 3.1 auf Windows 7 64bit installiert.</p></blockquote>
+
+<p>Das ganze funktioniert übrigens auch bei den iMacs, z.B. 21&#8221; oder 27&#8221;, hier haben nur die Grafikkartentreiber einen anderen Namen, da sie von ATI stammen, die Vorgehensweise ist jedoch grundsätzlich gleich.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bootcamp 3.0 lässt sich nicht von der MacOS X-DVD auf Windows 7-64bit installieren]]></title>
+    <link href="http://sailor79.github.com/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren/"/>
+    <updated>2010-10-14T20:36:50+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/bootcamp-3-0-laesst-sich-nicht-von-der-macos-x-dvd-auf-windows-7-64bit-installieren</id>
+    <content type="html"><![CDATA[<h2>&#8220;Boot Camp x64 is unsupported on this computer model&#8221;</h2>
+
+<p>Ich habe (u.a.) mein Macbook 13&#8221; (Baureihe Ende 2008) nach einem Virenbefall formatiert und zunächst Mac OS X Snow Leopard neu installiert, um danach (nach allen Apple Updates) mittels Bootcamp 3.0 die Windows 7 professional 64bit - Version in einer eigenen Partition zu installieren. Ergänzend sei gesagt, dass Virtualisierungsoftware wie Parallels Desktop für mich aus Perfomancegründen leider nicht  in Frage kommt.<!-- more --></p>
+
+<p>Nach Abschluss der Windowsinstallation stoße ich nun auf das erste Bootcamp-Problem:
+Beim Starten der der Setup.exe auf der MacOS X Install-DVD erhalte ich die Fehlermeldung:</p>
+
+<pre><code>         "Boot Camp x64 is unsupported on this computer model"
+</code></pre>
+
+<p>Na wunderbar denke ich, finde aber schnell eine Lösung, bevor ich mich dabei ertappe, erste Ansätze von Verschwörungstheorien zu entwickeln:</p>
+
+<p>Man starte auf der MacOS X Snow Leopard - Install DVD nicht die Datei <code>setup.exe</code>, sondern wählt direkt die 64bit-Version von Bootcamp die man dort findet: <code>D:\Boot Camp\drivers\Apple\Bootcamp64.msi</code>. Dabei steht <code>D:\</code> für den jeweiligen Laufwerksbuchstaben des CD/DVD-Laufwerks.</p>
+
+<p>Die Installation läuft jetzt wunderbar durch, und nach einem Neustart mache ich mich nun an das mir schon aus der  <a href="http://support.apple.com/de_DE/downloads/#macoscomponents">Apple-Website</a> bekannte Bootcamp 3.1-Update heran, welches wesentliche Verbesserungen mit sich bringen soll. Hier stoße ich leider auf größere Hindernisse, die aber letztlich auch machbar sind. Die Lösung bzw. das Workaround findet Ihr im nächsten Artikel, den Sie hier <a href="http://home-server-mind.com/bootcamp-3-1-laesst-sich-auch-nicht-mit-apple-software-update-auf-windows-7-64bit-installieren/">weiterlesen</a> können.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[WHS nicht erreichbar, wie komme ich sofort an meine Daten?]]></title>
+    <link href="http://sailor79.github.com/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten/"/>
+    <updated>2010-10-08T10:18:28+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/whs-nicht-erreichbar-wie-komme-ich-sofort-an-meine-daten</id>
+    <content type="html"><![CDATA[<h3>Gedanken für den Notfall</h3>
+
+<p>Die Share-Ordner auf dem WHS sind zugegeben sehr nützlich, um Dokumente und andere Daten zentral zu speichern, Musik und Filme im eigenen Netz zu streamen und Clients zu sichern.</p>
+
+<p>Doch was ist, wenn man wie ich fast alles nur noch auf dem WHS speichert, dieser jedoch plötzlich nicht mehr funktioniert bzw. nicht mehr erreichbar ist und man jedoch dringend an die Daten kommen muss? (Das kann wie in meinem Fall übrigens sehr schnell passieren wenn man versucht, VPN uber RAS auf dem WHS konfiguriert und danach gar nichts mehr geht, aber dazu ein anderes mal mehr…) Da nutzt einem zunachst auch kein RAID bzw. die WHS-Dublizierung o.ä.<!-- more --></p>
+
+<h4>Die von der individuellen Konfiguration unabhängigste Lösung für jedermann im Notfall ist ganz einfach:</h4>
+
+<p>Man kaufe sich ein 3,5” Festplattengehause, in meinen Fall bei SATA-HDD, mit SATA-Anschluss, in einem Elektronikfachmarkt seines Vertrauens, z.B. das Trekstor DataStation maxi g.u-Gehäuse, für das ich knapp 20 Euro bezahlt habe. Dieses kann man später mit einer neuen Festplatte auch als externe Backuplösung fur den Server und externes Backup der Client-Backups nutzen, falls die Server-Festplatten mal alle defekt sind.</p>
+
+<p>Nun baut man die Festplatte(n) aus dem  Homeserver aus, integriert diese in das Gehäuse und schließt es per USB  an ein PC oder Notebook an und sucht nach dem Ordner <code>D:/d$/DE/shares</code>.
+Jetzt kann man bequem seine Daten benutzen und ggf. retten, bevor man sich beizeiten dem eigentlichen Übel widmet, nämlich der Frage, warum der Server nicht mehr erreichbar ist.</p>
+
+<p>Diese Vorgehensweise schützt nicht vor defekten Server-Festplatten. Hier wäre es sinnvoll, sich zusätzlich zum Gehäuse eine Festplatte zu kaufen, mit der man wichtigen Dateien regelmäßig auf dieser USB-HDD sichert. Gleichzeitig besitzt man dieses Gehäuse, um im Bedarfsfall erst mal die aktuelleren Daten auf dem Server zu sichten, da im Regelfall die HDD nicht defekt ist, sondern “nur” ein Konfigurations- oder Netzproblem besteht.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mein Intel® Entry Storage System SS4200-EHW (ähnlich FSC Scaleo)]]></title>
+    <link href="http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo/"/>
+    <updated>2010-10-07T22:00:21+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/mein-intel-entry-storage-system-ss4200-ehw-aehnlich-fsc-scaleo</id>
+    <content type="html"><![CDATA[<h2>Der Ursprung aller Gedanken</h2>
+
+<p>Natürlich mit der Front zur Wand aufgestellt, weil sich sonst die Drehzahl der Lüfter durch schlechte Luftströmung signifikant erhöht und dadurch das System lauter bis viel lauter wird. Daher auch leider weniger Wohnzimmer geeignet, es sei denn man hat eine freie Stellfläche zur Verfügung mit ausreichend Platz nach hinten.<!-- more --></p>
+
+<p><img src="../images/2010/10/homeserverkompakt-300x153-150x150.jpg" alt="Aussenansicht Intel SS4200" /><img src="../images/2010/10/innen-150x150.jpg" alt="Innenansicht Intel SS4200" /><img src="../images/2010/10/innen_umgeklappt-150x150.jpg" alt="Intel SS4200 innen umgeklappt" /></p>
+
+<p>Erweitert um:</p>
+
+<pre><code>- 2 GB DDR2 PC2-6400 ECC 800MHz Intel RAM
+- 2x WD 1,5TB SATA 7200 32MB Greenpower 24h-Festplatten
+</code></pre>
+
+<p>Die rechte und linke Festplattenhalterung lässt sich jeweils um knapp 180° umklappen; ideal um Hardware auszutauschen bzw. zu erweitern.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Willkommen]]></title>
+    <link href="http://sailor79.github.com/homeservermind/willkommen/"/>
+    <updated>2010-10-07T11:29:54+02:00</updated>
+    <id>http://sailor79.github.com/homeservermind/willkommen</id>
+    <content type="html"><![CDATA[<p><strong>Hallo Leser!</strong></p>
+
+<p>Man muss die Welt nicht immer neu erfinden, schöner ist, wenn man relevante Informationen einfach teilen kann. Da ich selber reger Nutzer diverser Foren und Technik-Blogs bin, möchte ich versuchen, mit dieser Seite ein Stück Erfahrungen zurückzugeben und relevante Informationen projektbezogen so zusammenzutragen, daß ein Mehrwert entsteht.<!-- more --></p>
+
+<p>Hier findet Ihr zukünftig Informationen zu den Themen Homesever, Technik, Multimedia und viele andere Themen, über die ich so stolpere. Ob Vernetzung zuhause oder integrierte mobile Anwendungen, ob Wordpress und CSS, hier sollen Gedanken zu verschiedenen Aspekten sowie anstehende Projekten und deren Realisationsverlauf abgebildet werden.</p>
+
+<p>Ich freue mich auf einen regen Gedankenaustausch :-)</p>
+
+<p>Viele Grüße
+<em>Marc</em></p>
+]]></content>
+  </entry>
+  
+</feed>
